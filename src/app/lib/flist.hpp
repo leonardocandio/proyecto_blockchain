@@ -7,6 +7,9 @@
 
 #include "node.hpp"
 #include "stdexcept"
+#include "flist_iterator.hpp"
+
+#define top head->next
 
 template<typename T>
 class flist {
@@ -34,17 +37,39 @@ public:
     template<typename... Args>
     void emplace_front(Args &&... args);
 
+    using iterator = flist_iterator<T>;
+
+    iterator begin() const;
+
+    iterator end() const;
+
+    iterator before_begin() const;
 
 private:
 
-    node<T> *head;
+    basic_node *head;
     size_t count;
 };
 
 template<typename T>
+typename flist<T>::iterator flist<T>::begin() const {
+    return flist::iterator(head->next);
+}
+
+template<typename T>
+typename flist<T>::iterator flist<T>::end() const {
+    return flist::iterator(nullptr);
+}
+
+template<typename T>
+typename flist<T>::iterator flist<T>::before_begin() const {
+    return flist::iterator(head);
+}
+
+template<typename T>
 flist<T>::flist() {
     count = 0;
-    head = nullptr;
+    head = new basic_node();
 }
 
 template<typename T>
@@ -73,9 +98,9 @@ template<typename T>
 void flist<T>::push_front(const T &value) {
     auto *temp = new node<T>;
     temp->data = value;
-    count++;
     if (!empty())
         temp->next = head;
+    count++;
     head = temp;
 }
 
@@ -84,8 +109,8 @@ void flist<T>::pop_front() {
     if (empty()) {
         throw std::out_of_range("Empty list");
     }
-    node<T> *temp = head;
-    head = head->next;
+    auto *temp = top;
+    top = top->next;
     count--;
     delete temp;
 }
@@ -95,12 +120,12 @@ T &flist<T>::front() const {
     if (empty()) {
         throw std::out_of_range("Empty list");
     }
-    return head->data;
+    return static_cast<node<T> *>(top)->data;
 }
 
 template<typename T>
 bool flist<T>::empty() const {
-    return head == nullptr;
+    return top == nullptr;
 }
 
 template<typename T>
@@ -119,10 +144,10 @@ template<typename T>
 template<typename... Args>
 void flist<T>::emplace_front(Args &&... args) {
     auto *temp = new node<T>(std::forward<Args>(args)...);
-    count++;
     if (!empty())
-        temp->next = head;
-    head = temp;
+        temp->next = top;
+    count++;
+    top = temp;
 }
 
 

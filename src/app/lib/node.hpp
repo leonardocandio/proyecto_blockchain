@@ -7,15 +7,16 @@
 
 #include "utility"
 
-template<class T>
-struct node {
-    T data;
-    node *next;
+struct basic_node {
+    basic_node *next;
+};
 
-    node() : next(nullptr), data(nullptr) {}
+template<class T>
+struct node : basic_node {
+    T data;
 
     template<class... Args>
-    explicit node(Args &&... args) : next(nullptr), data(std::forward<Args>(args)...) {}
+    explicit node(Args &&... args) : data(std::forward<Args>(args)...) {}
 };
 
 #endif //PROYECTO_BLOCKCHAIN_NODE_HPP

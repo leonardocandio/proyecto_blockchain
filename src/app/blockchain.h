@@ -12,16 +12,19 @@ class blockchain {
 public:
     blockchain();
 
-    void addBlock(const std::string& data);
+    void addBlock(const std::string &data);
 
-    bool isChainValid() const;
+    [[nodiscard]] bool isChainValid() const;
+
+    virtual ~blockchain();
+
+    block *const getLastest() const;
 
 private:
-    uint64_t difficulty;
+    short unsigned int difficulty;
 
-    flist<block> chain;
+    block *latest;
 
-    block getLastBlock() const;
 };
 
 

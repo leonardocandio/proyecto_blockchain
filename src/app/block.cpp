@@ -50,3 +50,19 @@ void block::setPrevHash(const std::string &prevHash) {
 
 block::~block() {
 }
+
+const std::string &block::getData() const {
+    return data;
+}
+
+const uint64_t &block::getIndex() const {
+    return index;
+}
+
+block *block::getPrevBlock() const {
+    return prevBlock;
+}
+
+void block::setPrevBlock(block *pBlock) {
+    prevBlock = pBlock;
+}

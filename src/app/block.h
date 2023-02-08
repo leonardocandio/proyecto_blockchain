@@ -20,9 +20,19 @@ public:
 
     [[nodiscard]] std::string calculateHash() const;
 
-    const std::string &getPrevHash() const;
+    [[nodiscard]] const std::string &getPrevHash() const;
 
     void setPrevHash(const std::string &prevHash);
+
+    [[nodiscard]] const std::string &getData() const;
+
+    [[nodiscard]] const uint64_t &getIndex() const;
+
+    block *getPrevBlock() const;
+
+    virtual ~block();
+
+    void setPrevBlock(block *pBlock);
 
 private:
     uint64_t index;
@@ -34,9 +44,7 @@ private:
 
     EVP_MD *sha256;
     unsigned char *mdout;
-
-public:
-    virtual ~block();
+    block *prevBlock;
 
 };
 

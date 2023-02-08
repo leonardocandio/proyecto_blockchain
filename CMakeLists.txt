@@ -8,20 +8,19 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 
-
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(OpenSSL REQUIRED)
+
 
 add_executable(proyecto_blockchain
-        mainwindow.ui
-        mainwindow.cpp
-        main.cpp
-        )
+        src/main.cpp
+        src/app/block.cpp src/app/blockchain.cpp)
 target_link_libraries(proyecto_blockchain
         Qt::Core
         Qt::Gui
         Qt::Widgets
         )
-
+target_link_libraries(proyecto_blockchain OpenSSL::SSL OpenSSL::Crypto)
 set_target_properties(proyecto_blockchain PROPERTIES
         WIN32_EXECUTABLE ON
         MACOSX_BUNDLE ON

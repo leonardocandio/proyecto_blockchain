@@ -5,8 +5,8 @@
 #ifndef PROYECTO_BLOCKCHAIN_FLIST_HPP
 #define PROYECTO_BLOCKCHAIN_FLIST_HPP
 
-#include <cstddef>
-#include <stdexcept>
+#include "node.hpp"
+#include "stdexcept"
 
 template<typename T>
 class flist {
@@ -36,17 +36,8 @@ public:
 
 
 private:
-    struct node {
-        T data;
-        node *next;
 
-        node() : next(nullptr), data(nullptr) {}
-
-        template<class... Args>
-        explicit node(Args &&... args) : next(nullptr), data(std::forward<Args>(args)...) {}
-    };
-
-    node *head;
+    node<T> *head;
     size_t count;
 };
 
@@ -80,7 +71,7 @@ flist<T>::~flist() {
 
 template<typename T>
 void flist<T>::push_front(const T &value) {
-    node *temp = new node;
+    auto *temp = new node<T>;
     temp->data = value;
     count++;
     if (!empty())
@@ -93,7 +84,7 @@ void flist<T>::pop_front() {
     if (empty()) {
         throw std::out_of_range("Empty list");
     }
-    node *temp = head;
+    node<T> *temp = head;
     head = head->next;
     count--;
     delete temp;
@@ -127,7 +118,7 @@ void flist<T>::clear() {
 template<typename T>
 template<typename... Args>
 void flist<T>::emplace_front(Args &&... args) {
-    node *temp = new node(std::forward<Args>(args)...);
+    auto *temp = new node<T>(std::forward<Args>(args)...);
     count++;
     if (!empty())
         temp->next = head;

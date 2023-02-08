@@ -6,7 +6,7 @@
 #define PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
 
 #include "block.h"
-#include "flist.hpp"
+#include "lib/flist.hpp"
 
 class blockchain {
 public:

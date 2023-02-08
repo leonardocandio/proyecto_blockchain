@@ -11,18 +11,6 @@ blockchain::blockchain() {
 }
 
 bool blockchain::isChainValid() const {
-    for (int i = 1; i < chain.size(); ++i) {
-        block currentBlock = chain.front();
-        block previousBlock = chain.front();
-
-        if (currentBlock.getHash() != currentBlock.calculateHash()) {
-            return false;
-        }
-
-        if (currentBlock.getPrevHash() != previousBlock.getHash()) {
-            return false;
-        }
-    }
     return true;
 }
 

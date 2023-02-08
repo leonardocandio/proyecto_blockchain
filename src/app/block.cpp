@@ -18,13 +18,18 @@ std::string block::getHash() {
 }
 
 void block::mineBlock(uint64_t difficulty) {
-    std::string target(difficulty, '0');
-    for (nonce = 0; hash.substr(0, difficulty) != target; nonce++) {
-        hash = calculateHash();
+    while (true) {
+        timestamp = std::time(nullptr);
+        for (uint64_t i = 0; i < UINT64_MAX; ++i) {
+            nonce = i;
+            hash = calculateHash();
+            if (hash.substr(0, difficulty) == std::string(difficulty, '0')) {
+                return;
+            }
+        }
+        timestamp = std::time(nullptr);
     }
 
-    putchar('a');
-    putchar('\n');
 }
 
 std::string block::calculateHash() const {

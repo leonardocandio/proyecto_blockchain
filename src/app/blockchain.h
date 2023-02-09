@@ -6,7 +6,8 @@
 #define PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
 
 #include "block.h"
-#include "lib/flist.hpp"
+#include "../app/lib/vector.hpp"
+#include "fstream"
 
 class blockchain {
 public:
@@ -18,12 +19,14 @@ public:
 
     virtual ~blockchain();
 
-    block *const getLastest() const;
+    void addFromFile(const std::string &path, bool skipFirstLine);
+
+    vector<block> *getChain();
 
 private:
     short unsigned int difficulty;
 
-    block *latest;
+    vector<block> chain;
 
 };
 

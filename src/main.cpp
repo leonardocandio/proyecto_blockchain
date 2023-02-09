@@ -1,16 +1,15 @@
-#include <QApplication>
-#include <QPushButton>
 #include "app/blockchain.h"
 #include "iostream"
 
+
 int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
-    blockchain b;
-    b.addBlock("block1");
-    b.addBlock("block2");
-    QString s = b.isChainValid() ? "blockchain valida" : "blockchain invalidad";
-    QPushButton button(s, nullptr);
-    button.resize(200, 100);
-    button.show();
-    return QApplication::exec();
+    blockchain *safe = new blockchain();
+
+    safe->addBlock("Hola");
+    safe->addBlock("Hola1");
+    safe->addBlock("Hola2");
+    safe->addBlock("Hola3");
+
+    std::cout << safe->isChainValid();
 }
+

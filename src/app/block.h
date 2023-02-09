@@ -7,44 +7,46 @@
 
 #include "ctime"
 #include "sstream"
-#include "openssl/evp.h"
+#include "algorithm"
 
 class block {
 public:
+    block();
 
     block(uint64_t index, std::string data);
 
-    std::string getHash();
+    block(uint64_t index, std::string data, std::size_t *prevHash);
+
 
     void mineBlock(uint64_t difficulty);
 
-    [[nodiscard]] std::string calculateHash() const;
+    [[nodiscard]] const std::size_t &getHash() const;
 
-    [[nodiscard]] const std::string &getPrevHash() const;
+    [[nodiscard]] std::size_t calculateHash() const;
 
-    void setPrevHash(const std::string &prevHash);
+    [[nodiscard]] const std::size_t &getPrevHash() const;
+
+    void setPrevHash(const std::size_t &prevHash);
 
     [[nodiscard]] const std::string &getData() const;
 
     [[nodiscard]] const uint64_t &getIndex() const;
 
-    block *getPrevBlock() const;
+    bool isValid() const;
+
+    friend class blockchain;
 
     virtual ~block();
 
-    void setPrevBlock(block *pBlock);
 
 private:
     uint64_t index;
     std::string data;
     std::time_t timestamp;
-    std::string hash;
+    std::size_t hash;
     uint64_t nonce;
-    std::string prevHash;
+    std::size_t *prevHash;
 
-    EVP_MD *sha256;
-    unsigned char *mdout;
-    block *prevBlock;
 
 };
 

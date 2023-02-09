@@ -5,46 +5,60 @@
 #include "blockchain.h"
 #include "iostream"
 
-blockchain::blockchain() : difficulty(2) {
-    latest = new block(0, "Genesis Block");
-    latest->mineBlock(difficulty);
-}
 
 bool blockchain::isChainValid() const {
-    block *current = latest;
-    while (current != nullptr) {
-        if (current->getHash() != current->calculateHash()) {
+    for (int i = 1; i < chain.size(); ++i) {
+        block currentBlock = chain[i];
+        block previousBlock = chain[i - 1];
+        if (currentBlock.getPrevHash() != previousBlock.calculateHash()) {
             return false;
         }
-        if (current->getPrevBlock() != nullptr) {
-            if (current->getPrevHash() != current->getPrevBlock()->getHash()) {
-                return false;
-            }
-        }
-        current = current->getPrevBlock();
     }
     return true;
 }
 
 
 void blockchain::addBlock(const std::string &data) {
-    std::string prevHash = getLastest()->getHash();
-    auto temp = latest;
-    latest = new block(temp->getIndex() + 1, data);
-    latest->setPrevHash(prevHash);
-    latest->mineBlock(difficulty);
-    latest->setPrevBlock(temp);
+    chain.emplace_back(chain.size(), data, &(chain.back().hash));
+    chain.back().mineBlock(difficulty);
 }
 
-block *const blockchain::getLastest() const {
-    return latest;
+
+blockchain::blockchain() {
+    difficulty = 2;
+    chain.emplace_back(0, "Genesis Block");
+    chain.back().mineBlock(difficulty);
 }
 
 blockchain::~blockchain() {
-    while (latest != nullptr) {
-        block *prev = latest->getPrevBlock();
-        delete latest;
-        latest = prev;
+}
+
+vector<block> *blockchain::getChain() {
+    return &chain;
+}
+
+void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
+
+    std::fstream file(path, std::ios::in);
+    std::stringstream ss;
+    int count = 0;
+    if (file.is_open()) {
+        std::string line;
+        if (skipFirstLine) std::getline(file, line);
+        while (std::getline(file, line)) {
+            if (line.empty()) {
+                continue;
+            }
+            ss << line << std::endl;
+            count++;
+            if (count > 9) {
+                count = 0;
+                addBlock(ss.str());
+                ss.clear();
+                ss.str("");
+            }
+        }
     }
 }
+
 

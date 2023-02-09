@@ -9,43 +9,31 @@
 block::block(uint64_t index, std::string data) : index(index), data(std::move(data)) {
     timestamp = std::time(nullptr);
     nonce = -1;
-    mdout = static_cast<unsigned char *>(OPENSSL_malloc(EVP_MAX_MD_SIZE));
-    sha256 = EVP_MD_fetch(nullptr, "SHA256", nullptr);
-}
-
-std::string block::getHash() {
-    return hash;
+    prevHash = new std::size_t();
 }
 
 void block::mineBlock(uint64_t difficulty) {
-    while (true) {
-        timestamp = std::time(nullptr);
-        for (uint64_t i = 0; i < UINT64_MAX; ++i) {
-            nonce = i;
-            hash = calculateHash();
-            if (hash.substr(0, difficulty) == std::string(difficulty, '0')) {
-                return;
-            }
-        }
-        timestamp = std::time(nullptr);
-    }
-
+    std::string target(difficulty, '0');
+    do {
+        nonce++;
+        hash = calculateHash();
+    } while (std::to_string(hash).substr(std::to_string(hash).size() - difficulty) != target);
+    std::cout << "Block mined: " << hash << std::endl;
 }
 
-std::string block::calculateHash() const {
+std::size_t block::calculateHash() const {
     std::stringstream ss;
+    std::hash<std::string> newHash;
     ss << index << timestamp << data << nonce << prevHash;
-    EVP_Digest(ss.str().c_str(), ss.str().length(), mdout, nullptr, sha256, nullptr);
-
-    return {reinterpret_cast<char *>(mdout)};
+    return newHash(ss.str());
 }
 
-const std::string &block::getPrevHash() const {
-    return prevHash;
+const std::size_t &block::getPrevHash() const {
+    return *prevHash;
 }
 
-void block::setPrevHash(const std::string &prevHash) {
-    block::prevHash = prevHash;
+void block::setPrevHash(const std::size_t &prevHash) {
+    *block::prevHash = prevHash;
 }
 
 block::~block() {
@@ -59,10 +47,20 @@ const uint64_t &block::getIndex() const {
     return index;
 }
 
-block *block::getPrevBlock() const {
-    return prevBlock;
+block::block(uint64_t index, std::string data, std::size_t *prevHash) {
+    block::index = index;
+    block::data = std::move(data);
+    block::prevHash = prevHash;
+    timestamp = std::time(nullptr);
+    nonce = -1;
+
 }
 
-void block::setPrevBlock(block *pBlock) {
-    prevBlock = pBlock;
+block::block() {
 }
+
+const std::size_t &block::getHash() const {
+    return hash;
+}
+
+

@@ -17,6 +17,11 @@ public:
 
     block(uint64_t index, std::string data, std::size_t *prevHash);
 
+    block(block&& other) noexcept;
+
+    block(const block& other);
+
+    block& operator=(const block& other);
 
     void mineBlock(uint64_t difficulty);
 

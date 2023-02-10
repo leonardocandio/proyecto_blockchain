@@ -19,7 +19,7 @@ public:
 
     virtual ~blockchain();
 
-    void addFromFile(const std::string &path, bool skipFirstLine);
+    void addFromFile(const std::string &path, bool skipFirstLine=true);
 
     vector<block> *getChain();
 

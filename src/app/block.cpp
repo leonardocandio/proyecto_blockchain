@@ -18,13 +18,12 @@ void block::mineBlock(uint64_t difficulty) {
         nonce++;
         hash = calculateHash();
     } while (std::to_string(hash).substr(std::to_string(hash).size() - difficulty) != target);
-    std::cout << "Block mined: " << hash << std::endl;
 }
 
 std::size_t block::calculateHash() const {
     std::stringstream ss;
     std::hash<std::string> newHash;
-    ss << index << timestamp << data << nonce << prevHash;
+    ss << index << timestamp << data << nonce << *prevHash;
     return newHash(ss.str());
 }
 
@@ -61,6 +60,41 @@ block::block() {
 
 const std::size_t &block::getHash() const {
     return hash;
+}
+
+block::block(block &&other) noexcept {
+    index = other.index;
+    data = std::move(other.data);
+    timestamp = other.timestamp;
+    hash = other.hash;
+    nonce = other.nonce;
+    prevHash = other.prevHash;
+    other.prevHash = nullptr;
+
+}
+
+bool block::isValid() const {
+    return calculateHash() == hash;
+}
+
+block::block(const block &other) {
+    index = other.index;
+    data = other.data;
+    timestamp = other.timestamp;
+    hash = other.hash;
+    nonce = other.nonce;
+    prevHash = new std::size_t(*other.prevHash);
+}
+
+block &block::operator=(const block &other) {
+    if (this == &other) return *this;
+    index = other.index;
+    data = other.data;
+    timestamp = other.timestamp;
+    hash = other.hash;
+    nonce = other.nonce;
+    prevHash = new std::size_t(*other.prevHash);
+    return *this;
 }
 
 

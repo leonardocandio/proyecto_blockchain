@@ -123,10 +123,6 @@ public:
         return array[index];
     }
 
-    block &operator[](int index) const {
-        return array[index];
-    }
-
     T &back() {
         return array[_size - 1];
     }
@@ -134,6 +130,28 @@ public:
     size_t size() const {
         return _size;
     }
+
+    static std::string jsonify(const vector &vec) {
+        std::stringstream ss;
+        ss << "[";
+        for (int i = 0; i < vec.size(); ++i) {
+            ss << vec[i].jsonify();
+            if (i != vec.size() - 1) {
+                ss << ",";
+            }
+        }
+        ss << "]";
+        return ss.str();
+    }
+
+    static std::string serialize(const vector &vec) {
+        std::stringstream ss;
+        for (int i = 0; i < vec.size(); ++i) {
+            ss << vec[i].serialize();
+        }
+        return ss.str();
+    }
+
 
     using iterator = vector_iterator<T>;
     using const_iterator = vector_iterator<const T>;

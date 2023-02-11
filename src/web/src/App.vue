@@ -9,24 +9,18 @@ export default {
   data() {
     return {
       loading: false,
-      blocks: null
+      blocks: null,
     };
   },
   methods: {
     async getBlocks() {
       this.loading = true;
       const response = await fetch("http://localhost:3000/blocks", {
-        method: "GET"
+        method: "GET",
       });
-      try {
-
-        this.blocks = JSON.parse(await response.text());
-      } catch (error) {
-        console.log(error);
-      }
-      console.log(this.blocks);
+      this.blocks = JSON.parse(await response.text());
       this.loading = false;
-    }
+    },
   },
 
   created() {
@@ -37,7 +31,7 @@ export default {
       },
       { immediate: true }
     );
-  }
+  },
 };
 </script>
 

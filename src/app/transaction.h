@@ -6,26 +6,24 @@
 #define PROYECTO_BLOCKCHAIN_TRANSACTION_H
 
 #include "string"
+
 class transaction {
 public:
     transaction() = default;
 
-    transaction(std::string account, std::string date, std::string transactionDetails, std::string checkingNumber,
-                std::string valueDate, std::string withdrawalAmount, std::string depositAmount,
-                std::string balance);
-
-    std::string serialize() const;
-
+    transaction(unsigned short step, double amount, double oldbalanceOrg, double newbalanceOrig,
+                std::string nameDest, double oldbalanceDest, double newbalanceDest);
 
 private:
-    std::string account;
-    std::string date;
-    std::string transactionDetails;
-    std::string checkingNumber;
-    std::string valueDate;
-    std::string withdrawalAmount;
-    std::string depositAmount;
-    std::string balance;
+    unsigned short step;
+    double amount;
+    double oldbalanceOrg;
+    double newbalanceOrig;
+    std::string nameDest;
+    double oldbalanceDest;
+    double newbalanceDest;
+
+
 };
 
 

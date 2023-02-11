@@ -4,6 +4,7 @@
 
 #include "blockchain.h"
 #include "iostream"
+#include "random"
 
 
 bool blockchain::isChainValid() const {
@@ -21,13 +22,6 @@ bool blockchain::isChainValid() const {
 }
 
 
-void blockchain::addBlock(const std::string &data) {
-    auto a = chain.back();
-    auto b = a.calculateHash();
-    chain.emplace_back(chain.size(), data, &(chain.back().hash));
-    chain.back().mineBlock(difficulty);
-}
-
 
 blockchain::blockchain() {
     difficulty = 2;
@@ -38,7 +32,7 @@ blockchain::blockchain() {
 blockchain::~blockchain() {
 }
 
-vector<block> *blockchain::getChain() {
+vector<block<transaction>> *blockchain::getChain() {
     return &chain;
 }
 
@@ -46,6 +40,10 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
 
     std::fstream file(path, std::ios::in);
     vector<transaction> transactions;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(2, 5);
+
     if (file.is_open()) {
         std::string line;
         if (skipFirstLine) std::getline(file, line);
@@ -56,26 +54,18 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
             std::stringstream ss(line);
             std::string item;
             vector<std::string> lineV;
+            int size = dis(gen);
             while (std::getline(ss, item, ',')) {
                 lineV.push_back(item);
             }
-            transactions.emplace_back(lineV[0], lineV[1], lineV[2], lineV[3], lineV[4], lineV[5], lineV[6], lineV[7]);
-            if (transactions.size() > 9) {
-                std::string msg;
-                for (const auto &t: transactions) {
-                    msg += t.serialize() + ";";
-                }
-                addBlock(msg);
-                transactions.clear();
+            transactions.emplace_back(std::stoi(lineV[0]), std::stod(lineV[1]), std::stod(lineV[2]),
+                                      std::stod(lineV[3]), lineV[4], std::stod(lineV[5]), std::stod(lineV[6]));
+            if (transactions.size() == size) {
+
+                size = dis(gen);
             }
         }
         if (transactions.size() > 0) {
-            std::string msg;
-            for (const auto &t: transactions) {
-                msg += t.serialize() + ";";
-            }
-            addBlock(msg);
-            transactions.clear();
         }
     }
 }
@@ -90,6 +80,11 @@ std::string blockchain::jsonify() const {
     ss.seekp(-1, std::ios_base::end);
     ss << "]";
     return ss.str();
+}
+
+void blockchain::addBlock(const vector<transaction* >& transactions) {
+    chain.emplace_back(transactions, chain.back().hash);
+    chain.back().mineBlock(difficulty);
 }
 
 

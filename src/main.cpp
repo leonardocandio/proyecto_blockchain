@@ -18,10 +18,12 @@ crow::json::wvalue handlePOST(const crow::request &req, crow::response &res) {
 int main(int argc, char *argv[]) {
     crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/")
+    CROW_ROUTE(app, "/blocks")
             .methods("GET"_method, "POST"_method)
                     ([](const crow::request &req) {
                         crow::response response;
+                        response.add_header("Access-Control-Allow-Origin", "*");
+                        response.add_header("Access-Control-Allow-Headers", "Content-Type");
                         switch (req.method) {
                             case crow::HTTPMethod::GET:
                                 response.json_value = handleGET(req, response);
@@ -34,6 +36,6 @@ int main(int argc, char *argv[]) {
                         }
                     });
 
-    app.port(18080).multithreaded().run();
+    app.port(3000).multithreaded().run();
 }
 

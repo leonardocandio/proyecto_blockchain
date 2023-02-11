@@ -1,9 +1,38 @@
-<script setup>
-</script>
-
 <template>
-  asdasdasdasdasd
+  {{blocks }}
 </template>
 
-<style scoped>
-</style>
+<script>
+export default {
+  name: "App",
+
+  data() {
+    return {
+      loading: false,
+      blocks: null,
+    };
+  },
+  methods: {
+    async getBlocks() {
+      this.loading = true;
+      const response = await fetch("http://localhost:3000/blocks", {
+        method: "GET",
+      });
+      this.blocks = await response.json();
+      this.loading = false;
+    },
+  },
+
+  created() {
+    this.$watch(
+      () => this.$route.params,
+      () => {
+        this.getBlocks();
+      },
+      { immediate: true }
+    );
+  },
+};
+</script>
+
+<style scoped></style>

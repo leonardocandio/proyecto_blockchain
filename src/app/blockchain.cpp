@@ -69,4 +69,14 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
     }
 }
 
+std::string blockchain::jsonify() const {
+    std::stringstream ss;
+    ss << "[";
+    for (const auto &block: chain) {
+        ss << block.jsonify() << ",";
+    }
+    ss << "]";
+    return ss.str();
+}
+
 

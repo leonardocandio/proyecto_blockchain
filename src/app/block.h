@@ -41,6 +41,9 @@ public:
 
     friend class blockchain;
 
+
+    [[nodiscard]] std::string jsonify() const;
+
     virtual ~block();
 
 

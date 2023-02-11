@@ -18,7 +18,8 @@ export default {
       const response = await fetch("http://localhost:3000/blocks", {
         method: "GET",
       });
-      this.blocks = await response.json();
+      this.blocks = JSON.parse(await response.text());
+      console.log(this.blocks);
       this.loading = false;
     },
   },

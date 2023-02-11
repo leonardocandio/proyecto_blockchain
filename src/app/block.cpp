@@ -98,3 +98,18 @@ block &block::operator=(const block &other) {
 }
 
 
+std::string block::jsonify() const {
+
+    std::stringstream ss;
+    ss << "{" << "\"index\" : " << index << ","
+       << R"("timestamp" : ")" << timestamp << "\","
+       << R"("data" : ")" << data << "\","
+       << R"("hash" : ")" << hash << "\","
+       << R"("prevhash" : ")" << *prevHash << "\","
+       << "\"nonce\" : " << nonce << ","
+       << "}";
+
+    return ss.str();
+}
+
+

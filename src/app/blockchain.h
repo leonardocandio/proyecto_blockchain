@@ -23,6 +23,8 @@ public:
 
     vector<block> *getChain();
 
+    [[nodiscard]] std::string jsonify() const;
+
 private:
     short unsigned int difficulty;
 

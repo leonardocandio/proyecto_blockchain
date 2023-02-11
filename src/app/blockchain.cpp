@@ -54,7 +54,7 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
             if (line.empty()) {
                 continue;
             }
-            ss << line << std::endl;
+            ss << line;
             count++;
             if (count > 9) {
                 count = 0;
@@ -75,6 +75,7 @@ std::string blockchain::jsonify() const {
     for (const auto &block: chain) {
         ss << block.jsonify() << ",";
     }
+    ss.seekp(-1, std::ios_base::end);
     ss << "]";
     return ss.str();
 }

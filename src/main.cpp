@@ -17,11 +17,9 @@ crow::json::wvalue handlePOST(const crow::request &req, crow::response &res, blo
 }
 
 int main(int argc, char *argv[]) {
-    crow::SimpleApp app;
+/*    crow::SimpleApp app;
     blockchain bc;
-    bc.addBlock("First block");
     bc.addFromFile("../data/transactions_debug.csv");
-
 
     CROW_ROUTE(app, "/blocks")
             .methods("GET"_method, "POST"_method)
@@ -31,7 +29,7 @@ int main(int argc, char *argv[]) {
                         response.add_header("Access-Control-Allow-Headers", "Content-Type");
                         switch (req.method) {
                             case crow::HTTPMethod::GET:
-                                response.write(handleGET(req, response, bc));
+                                response.body = handleGET(req, response, bc);
                                 break;
                             case crow::HTTPMethod::POST:
                                 break;
@@ -39,6 +37,8 @@ int main(int argc, char *argv[]) {
                         return response;
                     });
 
-    app.port(3000).multithreaded().run();
+    app.port(3000).multithreaded().run()*/;
+    crow::SimpleApp app;
+    app.port(3000).multithreaded().run_async();
 }
 

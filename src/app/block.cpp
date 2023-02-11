@@ -106,7 +106,7 @@ std::string block::jsonify() const {
        << R"("data" : ")" << data << "\","
        << R"("hash" : ")" << hash << "\","
        << R"("prevhash" : ")" << *prevHash << "\","
-       << "\"nonce\" : " << nonce << ","
+       << "\"nonce\" : " << nonce
        << "}";
 
     return ss.str();

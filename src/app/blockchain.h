@@ -8,6 +8,7 @@
 #include "block.h"
 #include "../app/lib/vector.hpp"
 #include "fstream"
+#include "transaction.h"
 
 class blockchain {
 public:

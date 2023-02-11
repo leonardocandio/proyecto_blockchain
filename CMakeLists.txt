@@ -7,7 +7,7 @@ find_package(Crow CONFIG REQUIRED)
 
 add_executable(proyecto_blockchain
         src/main.cpp
-        src/app/block.cpp src/app/blockchain.cpp src/app/lib/vector.hpp src/app/lib/vector_iterator.hpp)
+        src/app/block.cpp src/app/blockchain.cpp src/app/transaction.cpp src/app/transaction.h src/app/lib/vector.hpp src/app/lib/vector_iterator.hpp)
 
 if (MINGW)
     find_library(WSOCK32_LIBRARY wsock32)

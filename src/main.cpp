@@ -17,7 +17,7 @@ crow::json::wvalue handlePOST(const crow::request &req, crow::response &res, blo
 }
 
 int main(int argc, char *argv[]) {
-/*    crow::SimpleApp app;
+    crow::SimpleApp app;
     blockchain bc;
     bc.addFromFile("../data/transactions_debug.csv");
 
@@ -37,8 +37,6 @@ int main(int argc, char *argv[]) {
                         return response;
                     });
 
-    app.port(3000).multithreaded().run()*/;
-    crow::SimpleApp app;
-    app.port(3000).multithreaded().run_async();
+    app.port(3000).multithreaded().run();
 }
 

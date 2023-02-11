@@ -45,8 +45,7 @@ vector<block> *blockchain::getChain() {
 void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
 
     std::fstream file(path, std::ios::in);
-    std::stringstream ss;
-    int count = 0;
+    vector<transaction> transactions;
     if (file.is_open()) {
         std::string line;
         if (skipFirstLine) std::getline(file, line);
@@ -54,20 +53,33 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
             if (line.empty()) {
                 continue;
             }
-            ss << line;
-            count++;
-            if (count > 9) {
-                count = 0;
-                addBlock(ss.str());
-                ss.clear();
-                ss.str("");
+            std::stringstream ss(line);
+            std::string item;
+            vector<std::string> lineV;
+            while (std::getline(ss, item, ',')) {
+                lineV.push_back(item);
+            }
+            transactions.emplace_back(lineV[0], lineV[1], lineV[2], lineV[3], lineV[4], lineV[5], lineV[6], lineV[7]);
+            if (transactions.size() > 9) {
+                std::string msg;
+                for (const auto &t: transactions) {
+                    msg += t.serialize() + ";";
+                }
+                addBlock(msg);
+                transactions.clear();
             }
         }
-        if (count > 0) {
-            addBlock(ss.str());
+        if (transactions.size() > 0) {
+            std::string msg;
+            for (const auto &t: transactions) {
+                msg += t.serialize() + ";";
+            }
+            addBlock(msg);
+            transactions.clear();
         }
     }
 }
+
 
 std::string blockchain::jsonify() const {
     std::stringstream ss;

@@ -1,12 +1,6 @@
 import { createApp } from "vue";
-import { createPinia } from "pinia";
-
 import App from "./App.vue";
 import router from "./router";
-
-const app = createApp(App);
-
-app.use(createPinia());
-app.use(router);
-
-app.mount("#app");
+import 'material-design-icons/iconfont/material-icons.css'
+import 'materialize-css/dist/css/materialize.css'
+createApp(App).use(router).mount("#app");

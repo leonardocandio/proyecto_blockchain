@@ -1,38 +1,30 @@
 <template>
-  {{ blocks }}
+  <nav>
+    <div class="nav-wrapper blue darken-2">
+      <a href="" class="brand-logo right"
+        >BlockChain
+        <img
+          src="https://i.imgur.com/kzh10NY.png"
+          height="30"
+          style="vertical-align: right"
+          class="circle z-depth-2"
+        />
+      </a>
+      <ul id="nav-mobile" class="left hide-on-med-and-down">
+        <li><router-link to="/">Inicio</router-link></li>
+      </ul>
+    </div>
+  </nav>
+  <router-view />
 </template>
 
 <script>
+import M from 'materialize-css'
+
 export default {
-  name: "App",
-
-  data() {
-    return {
-      loading: false,
-      blocks: null,
-    };
-  },
-  methods: {
-    async getBlocks() {
-      this.loading = true;
-      const response = await fetch("http://localhost:3000/blocks", {
-        method: "GET",
-      });
-      this.blocks = JSON.parse(await response.text());
-      this.loading = false;
-    },
-  },
-
-  created() {
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        this.getBlocks();
-      },
-      { immediate: true }
-    );
-  },
-};
+  mounted () {
+    M.AutoInit()
+},
+}
 </script>
 
-<style scoped></style>

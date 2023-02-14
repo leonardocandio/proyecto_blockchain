@@ -123,6 +123,10 @@ public:
         return array[index];
     }
 
+    T &operator[](int index) const {
+        return array[index];
+    }
+
     T &back() {
         return array[_size - 1];
     }
@@ -131,11 +135,11 @@ public:
         return _size;
     }
 
-    static std::string jsonify(const vector &vec) {
+    static std::string jsonify(const vector<T*> &vec) {
         std::stringstream ss;
         ss << "[";
-        for (int i = 0; i < vec.size(); ++i) {
-            ss << vec[i].jsonify();
+    for (int i = 0; i < vec.size(); ++i) {
+            ss << vec[i]->jsonify();
             if (i != vec.size() - 1) {
                 ss << ",";
             }
@@ -144,10 +148,10 @@ public:
         return ss.str();
     }
 
-    static std::string serialize(const vector &vec) {
+    static std::string serialize(const vector<T*> &vec) {
         std::stringstream ss;
         for (int i = 0; i < vec.size(); ++i) {
-            ss << vec[i].serialize();
+            ss << vec[i]->serialize();
         }
         return ss.str();
     }

@@ -3,11 +3,42 @@
 //
 
 #include "transaction.h"
-
+#include <sstream>
 #include <utility>
 
 
-transaction::transaction(unsigned short step, double amount, double oldbalanceOrg, double newbalanceOrig,
+transaction::transaction(unsigned short step, std::string type, double amount, std::string nameOrig,
+                         double oldbalanceOrg,
+                         double newbalanceOrig,
                          std::string nameDest, double oldbalanceDest, double newbalanceDest) :
-        step(step), amount(amount), oldbalanceOrg(oldbalanceOrg), newbalanceOrig(newbalanceOrig),
+        step(step), type(type), amount(amount), nameOrig(nameOrig), oldbalanceOrg(oldbalanceOrg),
+        newbalanceOrig(newbalanceOrig),
         nameDest(std::move(nameDest)), oldbalanceDest(oldbalanceDest), newbalanceDest(newbalanceDest) {}
+
+std::string transaction::jsonify() const {
+    std::stringstream ss;
+    //using raw strings, jsonify the transaction
+    ss << R"({"step":)" << step
+       << R"(,"type":")" << type
+       << R"(","amount":)" << amount
+       << R"(,"nameOrig":")" << nameOrig
+       << R"(","oldbalanceOrg":)" << oldbalanceOrg
+       << R"(,"newbalanceOrig":)" << newbalanceOrig
+       << R"(,"nameDest":")" << nameDest
+       << R"(","oldbalanceDest":)" << oldbalanceDest
+       << R"(,"newbalanceDest":)" << newbalanceDest << "}";
+    return ss.str();
+}
+
+std::string transaction::serialize() const {
+    std::stringstream ss;
+    ss << step << ",";
+    ss << type << ",";
+    ss << amount << ",";
+    ss << oldbalanceOrg << ",";
+    ss << newbalanceOrig << ",";
+    ss << nameDest << ",";
+    ss << oldbalanceDest << ",";
+    ss << newbalanceDest;
+    return ss.str();
+}

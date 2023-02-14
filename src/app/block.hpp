@@ -15,17 +15,15 @@ class block {
 public:
     block();
 
-    block(uint64_t index, vector<T *> transactions, std::size_t *prevHash);
+    block(size_t index, vector<T *> transactions, std::size_t *prevHash);
 
     block(block &&other) noexcept;
 
     block(const block &other);
 
-    block(vector<T *> transactions, unsigned long i);
-
     block &operator=(const block &other);
 
-    void mineBlock(uint64_t difficulty);
+    void mineBlock(uint8_t difficulty);
 
     [[nodiscard]] const std::size_t &getHash() const;
 
@@ -37,7 +35,7 @@ public:
 
     [[nodiscard]] const vector<T *> &getTransactions() const;
 
-    [[nodiscard]] const uint64_t &getIndex() const;
+    [[nodiscard]] const size_t &getIndex() const;
 
     std::string serialize() const;
 
@@ -52,24 +50,31 @@ public:
 
 
 private:
-    uint64_t index;
+    size_t index;
     vector<T *> transactions;
     std::time_t timestamp;
     std::size_t hash;
-    uint64_t nonce;
+    size_t nonce;
     std::size_t *prevHash;
 
 
 };
 
 template<typename T>
-block<T>::block(vector<T *> transactions, unsigned long i) {
-
+block<T>::block() {
+    index = 0;
+    timestamp = 0;
+    hash = -1;
+    nonce = -1;
+    prevHash = new std::size_t(0);
 }
 
+template<typename T>
+block<T>::~block() {
+}
 
 template<typename T>
-void block<T>::mineBlock(uint64_t difficulty) {
+void block<T>::mineBlock(uint8_t difficulty) {
     std::string target(difficulty, '0');
     do {
         nonce++;
@@ -81,7 +86,7 @@ template<typename T>
 std::size_t block<T>::calculateHash() const {
     std::stringstream ss;
     std::hash<std::string> newHash;
-    ss << index << timestamp << serialize(transactions) << nonce << *prevHash;
+    ss << index << timestamp << vector<T>::serialize(transactions) << nonce << *prevHash;
     return newHash(ss.str());
 }
 
@@ -101,22 +106,21 @@ const vector<T *> &block<T>::getTransactions() const {
 }
 
 template<typename T>
-const uint64_t &block<T>::getIndex() const {
+const size_t &block<T>::getIndex() const {
     return index;
 }
 
 template<typename T>
-block<T>::block(uint64_t index, vector<T *> transactions, std::size_t *prevHash) {
+block<T>::block(size_t index, vector<T *> transactions, std::size_t *prevHash) {
     block::index = index;
     block::prevHash = prevHash;
+    block::transactions = transactions;
     timestamp = std::time(nullptr);
-    nonce = -1;
+    hash = calculateHash();
+    nonce = 0;
 
 }
 
-template<typename T>
-block<T>::block() {
-}
 
 template<typename T>
 const std::size_t &block<T>::getHash() const {
@@ -126,7 +130,7 @@ const std::size_t &block<T>::getHash() const {
 template<typename T>
 block<T>::block(block &&other) noexcept {
     index = other.index;
-    data = std::move(other.data);
+    transactions = other.transactions;
     timestamp = other.timestamp;
     hash = other.hash;
     nonce = other.nonce;
@@ -143,7 +147,7 @@ bool block<T>::isValid() const {
 template<typename T>
 block<T>::block(const block &other) {
     index = other.index;
-    data = other.data;
+    transactions = other.transactions;
     timestamp = other.timestamp;
     hash = other.hash;
     nonce = other.nonce;
@@ -154,7 +158,7 @@ template<typename T>
 block<T> &block<T>::operator=(const block &other) {
     if (this == &other) return *this;
     index = other.index;
-    data = other.data;
+    transactions = other.transactions;
     timestamp = other.timestamp;
     hash = other.hash;
     nonce = other.nonce;
@@ -166,12 +170,12 @@ block<T> &block<T>::operator=(const block &other) {
 template<typename T>
 std::string block<T>::jsonify() const {
     std::stringstream ss;
-    ss << "{" << "\"index\" : " << index << ","
-       << R"("timestamp" : ")" << timestamp << "\","
-       << R"("transactions" : ")" << vector<T>::jsonify(transactions) << "\","
-       << R"("hash" : ")" << hash << "\","
-       << R"("prevhash" : ")" << *prevHash << "\","
-       << "\"nonce\" : " << nonce
+    ss << "{" << R"("index" : )" << index << ","
+       << R"("timestamp" : )" << timestamp << ","
+       << R"("transactions" : )" << vector<T>::jsonify(transactions) << ","
+       << R"("hash" : ")" << hash << R"(",)"
+       << R"("prevhash" : ")" << *prevHash << R"(",)"
+       << R"("nonce" : )" << nonce
        << "}";
 
     return ss.str();

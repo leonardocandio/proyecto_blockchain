@@ -11,12 +11,19 @@ class transaction {
 public:
     transaction() = default;
 
-    transaction(unsigned short step, double amount, double oldbalanceOrg, double newbalanceOrig,
+    transaction(unsigned short step, std::string type, double amount, std::string nameOrig, double oldbalanceOrg,
+                double newbalanceOrig,
                 std::string nameDest, double oldbalanceDest, double newbalanceDest);
+
+    std::string jsonify() const;
+
+    std::string serialize() const;
 
 private:
     unsigned short step;
+    std::string type;
     double amount;
+    std::string nameOrig;
     double oldbalanceOrg;
     double newbalanceOrig;
     std::string nameDest;

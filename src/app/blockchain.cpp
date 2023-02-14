@@ -90,4 +90,9 @@ void blockchain::addBlock(const vector<transaction *> &transactions) {
     chain.back().mineBlock(difficulty);
 }
 
+block<transaction> *blockchain::getLastBlock() {
+
+    return &chain.back();
+}
+
 

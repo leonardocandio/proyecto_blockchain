@@ -27,6 +27,9 @@ int main(int argc, char *argv[]) {
             .methods("POST"_method)
                     ([&bc](const crow::request &req) {
                         crow::json::rvalue x = crow::json::load(req.body);
+                        if (!x){
+                            return crow::response(400);
+                        }
                         vector<transaction *> transactions;
                         for (auto &t: x["transactions"]) {
                             transactions.push_back(new transaction(
@@ -41,8 +44,13 @@ int main(int argc, char *argv[]) {
                                     t["newbalanceDest"].d())
                             );
                         }
-                        bc.addBlock(transactions);
-                        return crow::response(200);
+                        try {
+                            bc.addBlock(transactions);
+                        } catch (std::exception &e) {
+                            return crow::response(400, e.what());
+                        }
+                        auto r = crow::json::wvalue({{"newBlock", bc.getLastBlock()->jsonify()}});
+                        return crow::response(r);
                     });
 
     app.port(3000).multithreaded().run();

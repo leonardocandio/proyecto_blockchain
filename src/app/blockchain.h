@@ -26,6 +26,8 @@ public:
 
     [[nodiscard]] std::string jsonify() const;
 
+    block<transaction> *getLastBlock();
+
 private:
     short unsigned int difficulty;
 

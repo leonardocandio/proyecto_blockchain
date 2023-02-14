@@ -11,7 +11,7 @@
             <p>Agregue un registro en nuestra base de datos</p>
           </div>
           <div class="card-action">
-            <a href="http://localhost:8081/blocks">¡Vamos allá!</a>
+            <router-link to="/blocks">¡Vamos allá!</router-link>
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
             <p>Haga consultas dentro de nuestra base de datos</p>
           </div>
           <div class="card-action">
-            <a href="http://localhost:8081/search">¡Vamos allá!</a>
+            <router-link to="/search">¡Vamos allá!</router-link>
           </div>
         </div>
       </div>

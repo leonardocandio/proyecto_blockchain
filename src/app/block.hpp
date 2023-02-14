@@ -31,7 +31,7 @@ public:
 
     [[nodiscard]] const std::size_t &getPrevHash() const;
 
-    void setPrevHash(const std::size_t &prevHash);
+    void setPrevHash(const std::size_t &prevH);
 
     [[nodiscard]] const vector<T *> &getTransactions() const;
 
@@ -96,8 +96,8 @@ const std::size_t &block<T>::getPrevHash() const {
 }
 
 template<typename T>
-void block<T>::setPrevHash(const std::size_t &prevHash) {
-    *block<T>::prevHash = prevHash;
+void block<T>::setPrevHash(const std::size_t &prevH) {
+    *block<T>::prevHash = prevH;
 }
 
 template<typename T>

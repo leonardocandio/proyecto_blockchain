@@ -6,15 +6,16 @@
 #define PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
 
 #include "block.hpp"
-#include "../app/lib/vector.hpp"
+#include "../app/lib/dynamic_array.hpp"
 #include "fstream"
 #include "transaction.h"
+#include "../app/lib/heap.hpp"
 
 class blockchain {
 public:
     blockchain();
 
-    void addBlock(const vector<transaction* >& transactions);
+    void addBlock(const dynamic_array<transaction *> &transactions);
 
     [[nodiscard]] bool isChainValid() const;
 
@@ -22,7 +23,7 @@ public:
 
     void addFromFile(const std::string &path, bool skipFirstLine = true);
 
-    vector<block<transaction>> *getChain();
+    dynamic_array<block<transaction>> *getChain();
 
     [[nodiscard]] std::string jsonify() const;
 
@@ -31,8 +32,10 @@ public:
 private:
     short unsigned int difficulty;
 
-    vector<block<transaction>> chain;
+    dynamic_array<block<transaction>> chain;
 
+    heap<double, block<transaction>> maxHeap;
+    heap<double, block<transaction>> minHeap;
 };
 
 

@@ -8,14 +8,14 @@
 #include "ctime"
 #include "sstream"
 #include "algorithm"
-#include "lib/vector.hpp"
+#include "lib/dynamic_array.hpp"
 
 template<typename T>
 class block {
 public:
     block();
 
-    block(size_t index, vector<T *> transactions, std::size_t *prevHash);
+    block(size_t index, dynamic_array<T *> transactions, std::size_t *prevHash);
 
     block(block &&other) noexcept;
 
@@ -33,7 +33,7 @@ public:
 
     void setPrevHash(const std::size_t &prevH);
 
-    [[nodiscard]] const vector<T *> &getTransactions() const;
+    [[nodiscard]] const dynamic_array<T *> &getTransactions() const;
 
     [[nodiscard]] const size_t &getIndex() const;
 
@@ -51,7 +51,7 @@ public:
 
 private:
     size_t index;
-    vector<T *> transactions;
+    dynamic_array<T *> transactions;
     std::time_t timestamp;
     std::size_t hash;
     size_t nonce;
@@ -86,7 +86,7 @@ template<typename T>
 std::size_t block<T>::calculateHash() const {
     std::stringstream ss;
     std::hash<std::string> newHash;
-    ss << index << timestamp << vector<T>::serialize(transactions) << nonce << *prevHash;
+    ss << index << timestamp << dynamic_array<T>::serialize(transactions) << nonce << *prevHash;
     return newHash(ss.str());
 }
 
@@ -101,7 +101,7 @@ void block<T>::setPrevHash(const std::size_t &prevH) {
 }
 
 template<typename T>
-const vector<T *> &block<T>::getTransactions() const {
+const dynamic_array<T *> &block<T>::getTransactions() const {
     return transactions;
 }
 
@@ -111,7 +111,7 @@ const size_t &block<T>::getIndex() const {
 }
 
 template<typename T>
-block<T>::block(size_t index, vector<T *> transactions, std::size_t *prevHash) {
+block<T>::block(size_t index, dynamic_array<T *> transactions, std::size_t *prevHash) {
     block::index = index;
     block::prevHash = prevHash;
     block::transactions = transactions;
@@ -172,7 +172,7 @@ std::string block<T>::jsonify() const {
     std::stringstream ss;
     ss << "{" << R"("index" : )" << index << ","
        << R"("timestamp" : )" << timestamp << ","
-       << R"("transactions" : )" << vector<T>::jsonify(transactions) << ","
+       << R"("transactions" : )" << dynamic_array<T>::jsonify(transactions) << ","
        << R"("hash" : ")" << hash << R"(",)"
        << R"("prevhash" : ")" << *prevHash << R"(",)"
        << R"("nonce" : )" << nonce
@@ -184,7 +184,7 @@ std::string block<T>::jsonify() const {
 template<typename T>
 std::string block<T>::serialize() const {
     std::stringstream ss;
-    ss << index << timestamp << vector<T>::serialize(transactions) << nonce << *prevHash;
+    ss << index << timestamp << dynamic_array<T>::serialize(transactions) << nonce << *prevHash;
     return ss.str();
 
 }

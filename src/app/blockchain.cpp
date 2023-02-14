@@ -26,19 +26,20 @@ blockchain::blockchain() {
     difficulty = 2;
     chain.emplace_back();
     chain.back().mineBlock(difficulty);
+    maxHeap;
 }
 
 blockchain::~blockchain() {
 }
 
-vector<block<transaction>> *blockchain::getChain() {
+dynamic_array<block<transaction>> *blockchain::getChain() {
     return &chain;
 }
 
 void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
 
     std::fstream file(path, std::ios::in);
-    vector<transaction *> transactions;
+    dynamic_array<transaction *> transactions;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(5, 7);
@@ -53,7 +54,7 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
             }
             std::stringstream ss(line);
             std::string item;
-            vector<std::string> lineV;
+            dynamic_array<std::string> lineV;
             while (std::getline(ss, item, ',')) {
                 lineV.push_back(item);
             }
@@ -85,7 +86,7 @@ std::string blockchain::jsonify() const {
     return ss.str();
 }
 
-void blockchain::addBlock(const vector<transaction *> &transactions) {
+void blockchain::addBlock(const dynamic_array<transaction *> &transactions) {
     chain.emplace_back(chain.size(), transactions, &chain.back().hash);
     chain.back().mineBlock(difficulty);
 }

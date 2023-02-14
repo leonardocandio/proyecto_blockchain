@@ -15,20 +15,20 @@ public:
                 double newbalanceOrig,
                 std::string nameDest, double oldbalanceDest, double newbalanceDest);
 
-    std::string jsonify() const;
+    [[nodiscard]] std::string jsonify() const;
 
-    std::string serialize() const;
+    [[nodiscard]] std::string serialize() const;
 
 private:
-    unsigned short step;
+    unsigned short step{};
     std::string type;
-    double amount;
+    double amount{};
     std::string nameOrig;
-    double oldbalanceOrg;
-    double newbalanceOrig;
+    double oldbalanceOrg{};
+    double newbalanceOrig{};
     std::string nameDest;
-    double oldbalanceDest;
-    double newbalanceDest;
+    double oldbalanceDest{};
+    double newbalanceDest{};
 
 
 };

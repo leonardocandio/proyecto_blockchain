@@ -2,29 +2,30 @@
 // Created by Leonardo Candio on 9/02/23.
 //
 
-#ifndef PROYECTO_BLOCKCHAIN_VECTOR_HPP
-#define PROYECTO_BLOCKCHAIN_VECTOR_HPP
+#ifndef PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_HPP
+#define PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_HPP
 
 #include <utility>
 #include <stdexcept>
-#include "vector_iterator.hpp"
+#include "sstream"
+#include "dynamic_array_iterator.hpp"
 
 template<class T>
-class vector {
+class dynamic_array {
 public:
-    vector() : _size(0), capacity(5) {
+    dynamic_array() : _size(0), capacity(5) {
         array = new T[capacity];
     }
 
-    vector(const vector &other) : array(nullptr), _size(0), capacity(5) {
+    dynamic_array(const dynamic_array &other) : array(nullptr), _size(0), capacity(5) {
         *this = other;
     }
 
-    vector(vector &&other) noexcept: array(nullptr), _size(0), capacity(5) {
+    dynamic_array(dynamic_array &&other) noexcept: array(nullptr), _size(0), capacity(5) {
         *this = std::move(other);
     }
 
-    vector &operator=(const vector &other) {
+    dynamic_array &operator=(const dynamic_array &other) {
         if (this != &other) {
             delete[] array;
             _size = other._size;
@@ -37,7 +38,7 @@ public:
         return *this;
     }
 
-    vector &operator=(vector &&other) noexcept {
+    dynamic_array &operator=(dynamic_array &&other) noexcept {
         if (this != &other) {
             delete[] array;
             _size = other._size;
@@ -48,13 +49,13 @@ public:
         return *this;
     }
 
-    ~vector() {
+    ~dynamic_array() {
         delete[] array;
     }
 
     void push_back(const T &value) {
         if (_size == capacity) {
-            reserve(capacity == 0 ? 1 : capacity * 2);
+            reserve(capacity * (3 / 2) + 1);
         }
         array[_size++] = value;
     }
@@ -131,11 +132,11 @@ public:
         return array[_size - 1];
     }
 
-    size_t size() const {
+    [[nodiscard]] size_t size() const {
         return _size;
     }
 
-    static std::string jsonify(const vector<T*> &vec) {
+    static std::string jsonify(const dynamic_array<T*> &vec) {
         std::stringstream ss;
         ss << "[";
     for (int i = 0; i < vec.size(); ++i) {
@@ -148,7 +149,7 @@ public:
         return ss.str();
     }
 
-    static std::string serialize(const vector<T*> &vec) {
+    static std::string serialize(const dynamic_array<T*> &vec) {
         std::stringstream ss;
         for (int i = 0; i < vec.size(); ++i) {
             ss << vec[i]->serialize();
@@ -157,8 +158,8 @@ public:
     }
 
 
-    using iterator = vector_iterator<T>;
-    using const_iterator = vector_iterator<const T>;
+    using iterator = dynamic_array_iterator<T>;
+    using const_iterator = dynamic_array_iterator<const T>;
 
     iterator begin() { return iterator(&array[0]); }
 
@@ -175,4 +176,4 @@ private:
     size_t capacity;
 };
 
-#endif //PROYECTO_BLOCKCHAIN_VECTOR_HPP
+#endif //PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_HPP

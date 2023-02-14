@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
                         if (!x){
                             return crow::response(400);
                         }
-                        vector<transaction *> transactions;
+                        dynamic_array<transaction *> transactions;
                         for (auto &t: x["transactions"]) {
                             transactions.push_back(new transaction(
                                     t["step"].i(),

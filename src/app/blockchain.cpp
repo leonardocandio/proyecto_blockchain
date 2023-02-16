@@ -50,7 +50,7 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
                     new transaction(std::stoi(lineV[0]), lineV[1], std::stod(lineV[2]), lineV[3], std::stod(lineV[4]),
                                     std::stod(lineV[5]), lineV[6], std::stod(lineV[7]), std::stod(lineV[8])));
 
-            if (newTransactions.size() == size) {
+            if (newTransactions.size() == (size_t) size) {
                 addBlock(newTransactions);
                 newTransactions.clear();
                 size = dis(gen);

@@ -3,6 +3,8 @@ project(proyecto_blockchain VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Wpedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 find_package(Crow CONFIG REQUIRED)
 
 add_executable(proyecto_blockchain

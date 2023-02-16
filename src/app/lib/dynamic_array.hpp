@@ -31,7 +31,7 @@ public:
             _size = other._size;
             capacity = other.capacity;
             array = new T[capacity];
-            for (int i = 0; i < _size; ++i) {
+            for (size_t i = 0; i < _size; ++i) {
                 array[i] = other.array[i];
             }
         }
@@ -82,10 +82,10 @@ public:
         --_size;
     }
 
-    void reserve(int newCapacity) {
+    void reserve(size_t newCapacity) {
         if (newCapacity > capacity) {
             T *newData = new T[newCapacity];
-            for (int i = 0; i < _size; ++i) {
+            for (size_t i = 0; i < _size; ++i) {
                 newData[i] = std::move(array[i]);
             }
             delete[] array;
@@ -150,9 +150,9 @@ public:
 
 
 protected:
+    T *array;
     size_t _size;
     size_t capacity;
-    T *array;
 };
 
 #endif //PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_HPP

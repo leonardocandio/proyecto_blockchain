@@ -141,7 +141,7 @@ template<typename T>
 block<T>::block(size_t index, dynamic_array<T> transactions, std::size_t *prevHash) {
     block::index = index;
     block::prevHash = prevHash;
-    block::transactions = transactions;
+    block::transactions = std::move(transactions);
     timestamp = std::time(nullptr);
     hash = calculateHash();
     nonce = 0;

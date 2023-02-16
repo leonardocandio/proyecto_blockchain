@@ -4,7 +4,7 @@
 #include "sstream"
 
 
-int main(int argc, char *argv[]) {
+int main() {
     crow::App<crow::CORSHandler> app;
     auto &cors = app.get_middleware<crow::CORSHandler>();
 
@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 
     CROW_ROUTE(app, "/blocks")
             .methods("GET"_method)
-                    ([&bc](const crow::request &req) {
+                    ([&bc]() {
                         crow::json::wvalue x;
                         x["blocks"] = crow::json::load(bc.jsonify());
                         crow::response res(x);

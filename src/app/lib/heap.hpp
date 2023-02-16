@@ -74,7 +74,7 @@ private:
     }
 
     void heapify_up(int child) {
-        int pp = parent(child);
+        size_t pp = parent(child);
         if (pp < this->_size and comparator(elements[child].first, elements[pp].first)) {
             std::swap(elements[pp], elements[child]);
             heapify_up(pp);

@@ -18,18 +18,18 @@ public:
 
     T *operator->() { return &retrieve(); }
 
-    dynamic_array_iterator &operator++() {
+    virtual dynamic_array_iterator &operator++() {
         ++current;
         return *this;
     }
 
-    const dynamic_array_iterator operator++(int) {
+    virtual const dynamic_array_iterator operator++(int) {
         dynamic_array_iterator old = *this;
         ++(*this);
         return old;
     }
 
-    dynamic_array_iterator &operator--() {
+    virtual dynamic_array_iterator &operator--() {
         --current;
         return *this;
     }
@@ -40,12 +40,12 @@ public:
         return old;
     }
 
-    dynamic_array_iterator &operator+(int n) {
+    virtual dynamic_array_iterator &operator+(int n) {
         current += n;
         return *this;
     }
 
-    dynamic_array_iterator &operator-(int n) {
+    virtual dynamic_array_iterator &operator-(int n) {
         current -= n;
         return *this;
     }

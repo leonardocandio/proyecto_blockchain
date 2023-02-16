@@ -11,7 +11,7 @@ transaction::transaction(unsigned short step, std::string type, double amount, s
                          double oldbalanceOrg,
                          double newbalanceOrig,
                          std::string nameDest, double oldbalanceDest, double newbalanceDest) :
-        step(step), type(type), amount(amount), nameOrig(nameOrig), oldbalanceOrg(oldbalanceOrg),
+        step(step), type(std::move(type)), amount(amount), nameOrig(std::move(nameOrig)), oldbalanceOrg(oldbalanceOrg),
         newbalanceOrig(newbalanceOrig),
         nameDest(std::move(nameDest)), oldbalanceDest(oldbalanceDest), newbalanceDest(newbalanceDest) {}
 
@@ -41,4 +41,8 @@ std::string transaction::serialize() const {
     ss << oldbalanceDest << ",";
     ss << newbalanceDest;
     return ss.str();
+}
+
+double transaction::getAmount() const {
+    return amount;
 }

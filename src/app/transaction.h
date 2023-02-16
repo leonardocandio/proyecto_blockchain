@@ -19,6 +19,8 @@ public:
 
     [[nodiscard]] std::string serialize() const;
 
+    [[nodiscard]] double getAmount() const;
+
 private:
     unsigned short step{};
     std::string type;

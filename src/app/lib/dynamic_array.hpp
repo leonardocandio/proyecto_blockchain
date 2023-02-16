@@ -53,7 +53,7 @@ public:
         delete[] array;
     }
 
-    void push_back(const T &value) {
+    virtual void push_back(const T &value) {
         if (_size == capacity) {
             reserve(capacity * (3 / 2) + 1);
         }
@@ -120,15 +120,15 @@ public:
         _size = 0;
     }
 
-    T &operator[](int index) {
+    virtual T &operator[](int index) {
         return array[index];
     }
 
-    T &operator[](int index) const {
+    virtual const T &operator[](int index) const {
         return array[index];
     }
 
-    T &back() {
+    virtual T &back() {
         return array[_size - 1];
     }
 
@@ -136,44 +136,23 @@ public:
         return _size;
     }
 
-    static std::string jsonify(const dynamic_array<T*> &vec) {
-        std::stringstream ss;
-        ss << "[";
-    for (int i = 0; i < vec.size(); ++i) {
-            ss << vec[i]->jsonify();
-            if (i != vec.size() - 1) {
-                ss << ",";
-            }
-        }
-        ss << "]";
-        return ss.str();
-    }
-
-    static std::string serialize(const dynamic_array<T*> &vec) {
-        std::stringstream ss;
-        for (int i = 0; i < vec.size(); ++i) {
-            ss << vec[i]->serialize();
-        }
-        return ss.str();
-    }
-
 
     using iterator = dynamic_array_iterator<T>;
     using const_iterator = dynamic_array_iterator<const T>;
 
-    iterator begin() { return iterator(&array[0]); }
+    virtual iterator begin() { return iterator(&array[0]); }
 
-    const_iterator begin() const { return const_iterator(&array[0]); }
+    virtual const_iterator begin() const { return const_iterator(&array[0]); }
 
-    iterator end() { return iterator(&array[_size]); }
+    virtual iterator end() { return iterator(&array[_size]); }
 
-    const_iterator end() const { return const_iterator(&array[_size]); }
+    virtual const_iterator end() const { return const_iterator(&array[_size]); }
 
 
-private:
-    T *array;
+protected:
     size_t _size;
     size_t capacity;
+    T *array;
 };
 
 #endif //PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_HPP

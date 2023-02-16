@@ -10,12 +10,14 @@
 #include "fstream"
 #include "transaction.h"
 #include "../app/lib/heap.hpp"
+#include "lib/circular_array.hpp"
 
 class blockchain {
 public:
     blockchain();
 
-    void addBlock(const dynamic_array<transaction *> &transactions);
+
+    void addBlock(const dynamic_array<transaction *> &newT);
 
     [[nodiscard]] bool isChainValid() const;
 
@@ -23,19 +25,24 @@ public:
 
     void addFromFile(const std::string &path, bool skipFirstLine = true);
 
-    dynamic_array<block<transaction>> *getChain();
-
     [[nodiscard]] std::string jsonify() const;
 
-    block<transaction> *getLastBlock();
+    block<transaction *> *getLastBlock();
+
 
 private:
+
+    void indexNewData(const dynamic_array<transaction *> &newT);
+
     short unsigned int difficulty;
 
-    dynamic_array<block<transaction>> chain;
+    block<transaction *> *lastBlock;
+    block<transaction *> *firstBlock;
 
-    heap<double, block<transaction>> maxHeap;
-    heap<double, block<transaction>> minHeap;
+    heap<double, transaction *> maxHeap;
+    heap<double, transaction *> minHeap;
+
+    circular_array<transaction *> transactions;
 };
 
 

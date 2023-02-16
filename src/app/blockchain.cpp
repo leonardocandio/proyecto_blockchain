@@ -8,38 +8,26 @@
 
 
 bool blockchain::isChainValid() const {
-    for (int i = 1; i < chain.size(); ++i) {
-        auto currentBlock = chain[i];
-        auto previousBlock = chain[i - 1];
-        if (currentBlock.calculateHash() != currentBlock.hash) {
-            return false;
-        }
-        if (currentBlock.getPrevHash() != previousBlock.hash) {
-            return false;
-        }
-    }
-    return true;
+    return false;
 }
 
 
 blockchain::blockchain() {
     difficulty = 2;
-    chain.emplace_back();
-    chain.back().mineBlock(difficulty);
-    maxHeap;
+    firstBlock = new block<transaction *>();
+    firstBlock->mineBlock(difficulty);
+    lastBlock = firstBlock;
+    maxHeap = heap<double, transaction *>([](double a, double b) { return a > b; });
+    minHeap = heap<double, transaction *>([](double a, double b) { return a < b; });
 }
 
 blockchain::~blockchain() {
 }
 
-dynamic_array<block<transaction>> *blockchain::getChain() {
-    return &chain;
-}
-
 void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
 
     std::fstream file(path, std::ios::in);
-    dynamic_array<transaction *> transactions;
+    dynamic_array<transaction *> newTransactions;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(5, 7);
@@ -58,18 +46,18 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
             while (std::getline(ss, item, ',')) {
                 lineV.push_back(item);
             }
-            auto t = new transaction(std::stoi(lineV[0]), lineV[1], std::stod(lineV[2]), lineV[3], std::stod(lineV[4]),
-                                     std::stod(lineV[5]), lineV[6], std::stod(lineV[7]), std::stod(lineV[8]));
-            transactions.push_back(t);
+            newTransactions.push_back(
+                    new transaction(std::stoi(lineV[0]), lineV[1], std::stod(lineV[2]), lineV[3], std::stod(lineV[4]),
+                                    std::stod(lineV[5]), lineV[6], std::stod(lineV[7]), std::stod(lineV[8])));
 
-            if (transactions.size() == size) {
-                addBlock(transactions);
-                transactions.clear();
+            if (newTransactions.size() == size) {
+                addBlock(newTransactions);
+                newTransactions.clear();
                 size = dis(gen);
             }
         }
-        if (transactions.size() > 0) {
-            addBlock(transactions);
+        if (newTransactions.size() > 0) {
+            addBlock(newTransactions);
         }
     }
 }
@@ -78,22 +66,47 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
 std::string blockchain::jsonify() const {
     std::stringstream ss;
     ss << "[";
-    for (const auto &block: chain) {
-        ss << block.jsonify() << ",";
+    auto *currentBlock = firstBlock;
+    while (currentBlock != nullptr) {
+        ss << currentBlock->jsonify();
+        currentBlock = currentBlock->next;
+        if (currentBlock != nullptr) {
+            ss << ",";
+        }
     }
-    ss.seekp(-1, std::ios_base::end);
     ss << "]";
     return ss.str();
 }
 
-void blockchain::addBlock(const dynamic_array<transaction *> &transactions) {
-    chain.emplace_back(chain.size(), transactions, &chain.back().hash);
-    chain.back().mineBlock(difficulty);
+void blockchain::addBlock(const dynamic_array<transaction *> &newTransactions) {
+    for (const auto &t: newTransactions) {
+        transactions.push_back(t);
+    }
+
+    lastBlock->next = new block<transaction *>(lastBlock->getIndex() + 1, newTransactions, &lastBlock->hash);
+    lastBlock = lastBlock->next;
+    lastBlock->mineBlock(difficulty);
 }
 
-block<transaction> *blockchain::getLastBlock() {
-
-    return &chain.back();
+block<transaction *> *blockchain::getLastBlock() {
+    return lastBlock;
 }
+
+void blockchain::indexNewData(const dynamic_array<transaction *> &newT) {
+    for (const auto &t: newT) {
+        transactions.push_back(t);
+    }
+
+    for (const auto &t: newT) {
+        maxHeap.push(std::make_pair(t->getAmount(), t));
+        minHeap.push(std::make_pair(t->getAmount(), t));
+    }
+}
+
+
+
+
+
+
 
 

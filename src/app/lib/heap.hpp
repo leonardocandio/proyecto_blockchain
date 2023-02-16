@@ -11,22 +11,36 @@
 template<class IndexT, class DataT>
 class heap : public dynamic_array<std::pair<IndexT, DataT>> {
 public:
-    std::pair<IndexT, DataT> top() {
-        return elements[0];
+
+    heap() = default;
+
+    explicit heap(std::function<bool(IndexT, IndexT)> comparator) : comparator(comparator) {
+        this->_size = 0;
+        elements = dynamic_array<std::pair<IndexT, DataT>>();
+
     }
 
+    void push(std::pair<IndexT, DataT> element) {
+        elements.push_back(element);
+        heapify_up(this->_size);
+        this->_size++;
+    }
 
-    heap(dynamic_array<std::pair<IndexT, DataT>> &array, std::function<bool(std::pair<IndexT, DataT>, std::pair<IndexT, DataT>)> comparator) {
-        this->elements = array;
-        this->comparator = comparator;
-        this->_size = array.size();
-        buildHeap();
+    void pop() {
+        elements[0] = elements[this->_size - 1];
+        elements.pop_back();
+        this->_size--;
+        heapify_down(0);
+    }
+
+    std::pair<IndexT, DataT> top() {
+        return elements[0];
     }
 
 private:
 
     dynamic_array<std::pair<IndexT, DataT>> elements;
-    std::function<bool(std::pair<IndexT, DataT>, std::pair<IndexT, DataT>)> comparator;
+    std::function<bool(IndexT, IndexT)> comparator;
 
     void buildHeap() {
         for (int i = this->_size / 2; i >= 0; --i) {
@@ -61,7 +75,7 @@ private:
 
     void heapify_up(int child) {
         int pp = parent(child);
-        if (pp < this->size and comparator(elements[child].first, elements[pp].first)) {
+        if (pp < this->_size and comparator(elements[child].first, elements[pp].first)) {
             std::swap(elements[pp], elements[child]);
             heapify_up(pp);
         }

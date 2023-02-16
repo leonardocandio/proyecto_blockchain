@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
             .methods("POST"_method)
                     ([&bc](const crow::request &req) {
                         crow::json::rvalue x = crow::json::load(req.body);
-                        if (!x){
+                        if (!x) {
                             return crow::response(400);
                         }
                         dynamic_array<transaction *> transactions;

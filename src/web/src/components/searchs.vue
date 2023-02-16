@@ -19,12 +19,12 @@
     <label>Ingresa el tipo de búsqueda</label>
   </div>
 
-  <div id = "input_text" class="input-field col s12">
+  <!--<div id = "input_text" class="input-field col s12">
         <input id="input" type="text" class="validate">
         <label for="input">Ingrese el parametro</label>
-  </div>
+  </div>-->
 
-  <div id="test-slider"></div>
+  <!--<div id="test-slider"></div>-->
   
   </div>
 </template>

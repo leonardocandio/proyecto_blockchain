@@ -4,23 +4,59 @@
     <form class="col s12">
       <div class="row">
         <div class="input-field col s12">
-          <i class="material-icons prefix">format_list_numbered</i>
-          <input disabled value="Aqui va el numero de bloque" id="disabled" type="text" class="validate">
-          <label for="disabled"></label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-            <i class="material-icons prefix">filter_none</i>
-          <input disabled value="Numero de Nonce" id="disabled" type="text" class="validate">
-          <label for="disabled"></label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-            <i class="material-icons prefix">account_balance</i>
+            <i class="material-icons prefix">add_circle</i>
           <input id="transaction" type="text" class="validate">
-          <label for="transaction">Transaction</label>
+          <label for="transaction">step</label>
+        </div>
+      </div>
+    
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+          <input id="transaction" type="text" class="validate">
+          <label for="transaction">type</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+          <input id="transaction" type="text" class="validate">
+          <label for="transaction">nameOrig</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+          <input id="transaction" type="text" class="validate">
+          <label for="transaction">oldbalanceOrg</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+          <input id="transaction" type="text" class="validate">
+          <label for="transaction">newbalanceOrig</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+          <input id="transaction" type="text" class="validate">
+          <label for="transaction">nameDest</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+          <input id="transaction" type="text" class="validate">
+          <label for="transaction">oldbalanceDest</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+          <input id="transaction" type="text" class="validate">
+          <label for="transaction">newbalanceDest</label>
         </div>
       </div>
       <button class="btn waves-effect waves-light" type="submit" name="action">Subir

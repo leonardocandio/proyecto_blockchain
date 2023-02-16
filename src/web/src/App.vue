@@ -8,7 +8,7 @@
           height="30"
           style="vertical-align: right"
           class="circle z-depth-2"
-         alt="yyy"/>
+        />
       </a>
       <ul id="nav-mobile" class="left hide-on-med-and-down">
         <li><router-link to="/">Inicio</router-link></li>

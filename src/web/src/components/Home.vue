@@ -32,6 +32,22 @@
           </div>
         </div>
       </div>
+      <div class="col s4">
+        <div class="card large">
+          <div class="card-image">
+            <img
+              src="https://m.economictimes.com/thumb/msid-83710496,width-1000,height-659,resizemode-4,imgsize-552110/cryptocurrency.jpg"
+            />
+          </div>
+          <div class="card-content activator">
+            <p class="card-title">Vista de bloques</p>
+            <p>Vea los bloques hechos de nuestra API</p>
+          </div>
+          <div class="card-action">
+            <router-link to="/view">¡Vamos allá!</router-link>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

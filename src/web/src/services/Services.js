@@ -14,6 +14,9 @@ export default {
       return apiClient.get("/blocks");
     },
     postBlock(block) {
-        return apiClient.post("/posts", block);
-      },
+      return apiClient.post("/blocks", block);
+    },
+    searchBlock(transaction){
+      return apiClient.post("/transactions", transaction);
+    }
   };

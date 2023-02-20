@@ -54,7 +54,7 @@ int main() {
                         return crow::response(r);
                     });
     CROW_ROUTE(app, "/transactions")
-            .methods("SEARCH"_method)
+            .methods("POST"_method)
                     ([&bc](const crow::request &req) {
                          crow::json::rvalue body = crow::json::load(req.body);
                          if (!body) {

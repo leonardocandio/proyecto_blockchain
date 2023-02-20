@@ -29,7 +29,7 @@ public:
     block<transaction *> *getLastBlock();
 
 
-    dynamic_array<transaction *> getTransactionsByKey(std::string key);
+    dynamic_array<transaction *> getTransactionsByKey(std::string key, size_t limit);
 
     [[nodiscard]] size_t getSize() const;
 

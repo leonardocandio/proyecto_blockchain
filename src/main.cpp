@@ -17,11 +17,8 @@ int main() {
     CROW_ROUTE(app, "/blocks")
             .methods("GET"_method)
                     ([&bc]() {
-                        crow::json::wvalue x;
-                        x["blocks"] = crow::json::load(bc.jsonify());
-                        crow::response res(x);
-                        std::cout << bc.getSize();
-                        return res;
+                        crow::json::wvalue x({{"blocks", crow::json::load(bc.jsonify())}});
+                        return crow::response(x);
                     });
 
     CROW_ROUTE(app, "/blocks")
@@ -61,12 +58,12 @@ int main() {
                              return crow::response(400);
                          }
                          std::string key = body["key"].s();
+                         size_t limit = body["limit"].i();
 
-                         auto transactions = bc.getTransactionsByKey(key);
+                         auto transactions = bc.getTransactionsByKey(key, limit);
                          auto r = crow::json::wvalue({{"transactions", crow::json::load(jsonifyArray(transactions))}});
                          return crow::response(r);
                      }
-
                     );
 
     app.port(3000).multithreaded().run();

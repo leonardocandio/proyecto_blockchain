@@ -21,6 +21,19 @@ public:
 
     }
 
+    heap(const heap &other) : comparator(other.comparator), elements(other.elements) {
+        this->_size = other._size;
+    }
+
+    heap &operator=(const heap &other) {
+        if (this != &other) {
+            this->_size = other._size;
+            elements = other.elements;
+            comparator = other.comparator;
+        }
+        return *this;
+    }
+
     void push(std::pair<IndexT, DataT> element) {
         elements.push_back(element);
         heapify_up(this->_size);
@@ -40,31 +53,31 @@ public:
 
 private:
 
-    dynamic_array<std::pair<IndexT, DataT>> elements;
     std::function<bool(IndexT, IndexT)> comparator;
+    dynamic_array<std::pair<IndexT, DataT>> elements;
 
     void buildHeap() {
-        for (int i = this->_size / 2; i >= 0; --i) {
+        for (long i = (this->_size / 2); i >= 0; --i) {
             heapify_down(i);
         }
     }
 
-    int left(int index) {
+    size_t left(size_t index) {
         return 2 * index + 1;
     }
 
-    int right(int index) {
+    size_t right(size_t index) {
         return 2 * index + 2;
     }
 
-    int parent(int index) {
+    size_t parent(size_t index) {
         return (index - 1) / 2;
     }
 
-    void heapify_down(int parent) {
-        int hleft = left(parent);
-        int hright = right(parent);
-        int large = parent;
+    void heapify_down(size_t parent) {
+        size_t hleft = left(parent);
+        size_t hright = right(parent);
+        size_t large = parent;
 
         if (hleft < this->_size and comparator(elements[hleft].first, elements[large].first)) large = hleft;
         if (hright < this->_size and comparator(elements[hright].first, elements[large].first)) large = hright;
@@ -74,7 +87,7 @@ private:
         }
     }
 
-    void heapify_up(int child) {
+    void heapify_up(size_t child) {
         size_t pp = parent(child);
         if (pp < this->_size and comparator(elements[child].first, elements[pp].first)) {
             std::swap(elements[pp], elements[child]);

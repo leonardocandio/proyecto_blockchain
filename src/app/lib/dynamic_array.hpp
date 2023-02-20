@@ -18,8 +18,11 @@ public:
         array = new T[capacity];
     }
 
-    dynamic_array(const dynamic_array &other) : array(nullptr), _size(0), capacity(5) {
-        *this = other;
+    dynamic_array(const dynamic_array &other) : _size(other._size), capacity(other.capacity) {
+        array = new T[capacity];
+        for (size_t i = 0; i < _size; ++i) {
+            array[i] = other.array[i];
+        }
     }
 
     dynamic_array(dynamic_array &&other) noexcept: array(nullptr), _size(0), capacity(5) {

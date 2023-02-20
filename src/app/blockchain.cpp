@@ -3,6 +3,8 @@
 //
 
 #include "blockchain.h"
+
+#include <utility>
 #include "iostream"
 
 
@@ -22,6 +24,12 @@ blockchain::blockchain() {
 }
 
 blockchain::~blockchain() {
+    block<transaction *> *currentBlock = firstBlock;
+    while (currentBlock != nullptr) {
+        block<transaction *> *nextBlock = currentBlock->next;
+        delete currentBlock;
+        currentBlock = nextBlock;
+    }
 }
 
 void blockchain::addFromFile(const std::string &path, bool skipFirstLine, size_t transactionPerBlock) {
@@ -100,15 +108,25 @@ size_t blockchain::getSize() const {
     return _size;
 }
 
-dynamic_array<transaction *> blockchain::getTransactionsByKey(std::string key) {
+dynamic_array<transaction *> blockchain::getTransactionsByKey(std::string key, size_t limit) {
     dynamic_array<transaction *> result;
-    switch (resolveSearchType(key)) {
-        case MAX:
-            result.push_back(maxHeap.top().second);
+    switch (resolveSearchType(std::move(key))) {
+        case MAX: {
+            auto temp = maxHeap;
+            for (size_t i = 0; i < limit; i++) {
+                result.push_back(temp.top().second);
+                temp.pop();
+            }
             break;
-        case MIN:
-            result.push_back(minHeap.top().second);
+        }
+        case MIN: {
+            auto temp2 = minHeap;
+            for (size_t i = 0; i < limit; i++) {
+                result.push_back(temp2.top().second);
+                temp2.pop();
+            }
             break;
+        }
         default:
             throw std::invalid_argument("Invalid search type");
     }

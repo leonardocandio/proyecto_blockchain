@@ -50,7 +50,7 @@ int main() {
                         } catch (std::exception &e) {
                             return crow::response(400, e.what());
                         }
-                        auto r = crow::json::wvalue({{"newBlock", bc.getLastBlock()->jsonify()}});
+                        auto r = crow::json::wvalue({{"newBlock", crow::json::load(bc.getLastBlock()->jsonify())}});
                         return crow::response(r);
                     });
     CROW_ROUTE(app, "/transactions")
@@ -63,7 +63,7 @@ int main() {
                          std::string key = body["key"].s();
 
                          auto transactions = bc.getTransactionsByKey(key);
-                         auto r = crow::json::wvalue({{"transactions", jsonifyArray(transactions)}});
+                         auto r = crow::json::wvalue({{"transactions", crow::json::load(jsonifyArray(transactions))}});
                          return crow::response(r);
                      }
 

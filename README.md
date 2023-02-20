@@ -41,12 +41,12 @@ Como estructura principal y la base de todo el proyecto tenemos un circular arra
 Esta estructura funciona como una rueda la cual cuenta con un front y un back todo esto almacenado en un array y con las ventajas de acceso y de insert dentro de ella pues todo esto se manejaria como O(1), pues tendemos nuestros datos en forma de un circulo facilitando el acceso y teniendo el ahorro de memoria.
 
 -Métodos de indexación
-    Dentro de los métodos de indexacion tenamos el heap, en el cual usamos un maxheap y un minheap.
+Dentro de los métodos de indexacion tenamos el heap, en el cual usamos un maxheap y un minheap.
         
-    Para estos dos casos tenemos que ambos son arboles binarios completos (semicompletos). Los cuales se rigen de dos formas distintas, pues uno acomoda nuestros registros segun nosotros lo requiramos la informacion requerida en estas.
-    Ambos son estructuras que van ordenandose de acuredo a sus métodos de ordenamientos heapify-down y heapify-up. En este caso ambos son armados como arboles binarios a travez del array en el cual se mantienen almacenados  no de forma consecuente si no como la estructura lo demanda y como lo rige sus funciones: right, left y parent.
+Para estos dos casos tenemos que ambos son arboles binarios completos (semicompletos). Los cuales se rigen de dos formas distintas, pues uno acomoda nuestros registros segun nosotros lo requiramos la informacion requerida en estas.
+Ambos son estructuras que van ordenandose de acuredo a sus métodos de ordenamientos heapify-down y heapify-up. En este caso ambos son armados como arboles binarios a travez del array en el cual se mantienen almacenados  no de forma consecuente si no como la estructura lo demanda y como lo rige sus funciones: right, left y parent.
 
-        - Minheap (almacena en el root el dato menor)
-        - Maxheap (almacena en el root el dato mayor)
+- Minheap (almacena en el root el dato menor)
+- Maxheap (almacena en el root el dato mayor)
     
-        Para estos metodos de indexacion usamos heap para lograr que nuestra busqueda sea O(1) en ambos casos.
+Para estos metodos de indexacion usamos heap para lograr que nuestra busqueda sea O(1) en ambos casos.

@@ -6,11 +6,12 @@
         <div class="input-field col s12">
             <i class="material-icons prefix">add_circle</i>
           <input 
-          v-model = "block.step"
+          v-model = "block.transactions.newbalanceDest"
           type="number"
+          step="0.01"
           class="validate"
           required>
-          <label for="transaction">step</label>
+          <label for="transaction">newbalanceDest</label>
         </div>
       </div>
     
@@ -18,32 +19,22 @@
         <div class="input-field col s12">
             <i class="material-icons prefix">add_circle</i>
             <input 
-            v-model = "block.type"
+            v-model = "block.transactions.oldbalanceDest"
+            type="number"
+            step="0.01"
+            class="validate"
+            required>
+          <label for="transaction">oldbalanceDest</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+            <input 
+            v-model = "block.transactions.nameOrig"
             type="text"
             class="validate"
             required>
-          <label for="transaction">type</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-            v-model = "block.amount"
-            type="number"
-            class="validate"
-            required>
-          <label for="transaction">amount</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.nameOrig"
-          type="text"
-          class="validate"
-          required>
           <label for="transaction">nameOrig</label>
         </div>
       </div>
@@ -51,8 +42,43 @@
         <div class="input-field col s12">
             <i class="material-icons prefix">add_circle</i>
             <input 
-          v-model = "block.oldbalanceOrg"
+          v-model = "block.transactions.step"
           type="number"
+          class="validate"
+          required>
+          <label for="transaction">step</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+            <input 
+          v-model = "block.transactions.type"
+          type="text"
+          class="validate"
+          required>
+          <label for="transaction">Type</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+            <input 
+          v-model = "block.transactions.amount"
+          type="number"
+          step="0.01"
+          class="validate"
+          required>
+          <label for="transaction">Amount</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">add_circle</i>
+            <input 
+          v-model = "block.transactions.oldbalanceOrg"
+          type="number"
+          step="0.01"
           class="validate"
           required>
           <label for="transaction">oldbalanceOrg</label>
@@ -62,18 +88,7 @@
         <div class="input-field col s12">
             <i class="material-icons prefix">add_circle</i>
             <input 
-          v-model = "block.newbalanceOrig"
-          type="number"
-          class="validate"
-          required>
-          <label for="transaction">newbalanceOrig</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.nameDest"
+          v-model = "block.transactions.nameDest"
           type="text"
           class="validate"
           required>
@@ -84,22 +99,12 @@
         <div class="input-field col s12">
             <i class="material-icons prefix">add_circle</i>
             <input 
-          v-model = "block.oldbalanceDest"
+          v-model = "block.transactions.newbalanceOrig"
           type="number"
+          step="0.01"
           class="validate"
           required>
-          <label for="transaction">oldbalanceDest</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.newbalanceDest"
-          type="number"
-          class="validate"
-          required>
-          <label for="transaction">newbalanceDest</label>
+          <label for="transaction">newbalanceOrig</label>
         </div>
       </div>
       <button class="btn waves-effect waves-light" type="submit" name="enviar">Subir
@@ -131,6 +136,7 @@ export default {
   data() {
     return {
       block: {
+        transactions: {
         step: "",
         type: "",
         amount: "",
@@ -140,6 +146,7 @@ export default {
         nameDest: "",
         oldbalanceDest: "",
         newbalanceDest: "",
+        }
       },
 
       blocks : [],
@@ -165,8 +172,8 @@ export default {
         AgregarBlock(){
           const block = { ...this.block };
           console.log("body: ", block);
-          Services.postPost(block).then((response) => {
-          this.blocks = response.data.blocks;
+          Services.postBlock(block).then((response) => {
+          this.blocks = response.data;
           });
         },
     }

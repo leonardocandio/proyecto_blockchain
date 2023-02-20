@@ -53,6 +53,21 @@ int main() {
                         auto r = crow::json::wvalue({{"newBlock", bc.getLastBlock()->jsonify()}});
                         return crow::response(r);
                     });
+    CROW_ROUTE(app, "/transactions")
+            .methods("SEARCH"_method)
+                    ([&bc](const crow::request &req) {
+                         crow::json::rvalue body = crow::json::load(req.body);
+                         if (!body) {
+                             return crow::response(400);
+                         }
+                         std::string key = body["key"].s();
+
+                         auto transactions = bc.getTransactionsByKey(key);
+                         auto r = crow::json::wvalue({{"transactions", jsonifyArray(transactions)}});
+                         return crow::response(r);
+                     }
+
+                    );
 
     app.port(3000).multithreaded().run();
 }

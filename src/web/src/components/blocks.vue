@@ -1,4 +1,4 @@
-n<template>
+<template>
     <div class="container section">
     <h4><center>Agregar registro</center></h4>
     <form class="col s12" @submit.prevent="AgregarBlock">

@@ -16,18 +16,18 @@ class blockchain {
 public:
     blockchain();
 
-
     void addBlock(const dynamic_array<transaction *> &newT);
 
     [[nodiscard]] bool isChainValid() const;
 
     virtual ~blockchain();
 
-    void addFromFile(const std::string &path, bool skipFirstLine = true);
+    void addFromFile(const std::string &path, bool skipFirstLine = true, size_t transactionsPerBlock = 10);
 
     [[nodiscard]] std::string jsonify() const;
 
     block<transaction *> *getLastBlock();
+
 
 
 private:
@@ -38,7 +38,11 @@ private:
 
     block<transaction *> *lastBlock;
     block<transaction *> *firstBlock;
+    size_t _size;
+public:
+    size_t getSize() const;
 
+private:
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
 

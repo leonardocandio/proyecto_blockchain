@@ -60,7 +60,7 @@ private:
     size_t nonce;
     std::size_t *prevHash;
     block *next;
-    block *prev;
+
 };
 
 template<typename T>
@@ -145,6 +145,7 @@ block<T>::block(size_t index, dynamic_array<T> transactions, std::size_t *prevHa
     timestamp = std::time(nullptr);
     hash = calculateHash();
     nonce = 0;
+    next = nullptr;
 
 }
 
@@ -163,6 +164,7 @@ block<T>::block(block &&other) noexcept {
     nonce = other.nonce;
     prevHash = other.prevHash;
     other.prevHash = nullptr;
+    next = other.next;
 
 }
 

@@ -4,7 +4,6 @@
 
 #include "blockchain.h"
 #include "iostream"
-#include "random"
 
 
 bool blockchain::isChainValid() const {
@@ -13,6 +12,7 @@ bool blockchain::isChainValid() const {
 
 
 blockchain::blockchain() {
+    _size = 0;
     difficulty = 2;
     firstBlock = new block<transaction *>();
     firstBlock->mineBlock(difficulty);
@@ -24,17 +24,12 @@ blockchain::blockchain() {
 blockchain::~blockchain() {
 }
 
-void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
+void blockchain::addFromFile(const std::string &path, bool skipFirstLine, size_t transactionPerBlock) {
 
     std::fstream file(path, std::ios::in);
     dynamic_array<transaction *> newTransactions;
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(5, 7);
-
     if (file.is_open()) {
         std::string line;
-        int size = dis(gen);
         if (skipFirstLine) std::getline(file, line);
         while (std::getline(file, line)) {
             if (line.empty()) {
@@ -50,10 +45,9 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine) {
                     new transaction(std::stoi(lineV[0]), lineV[1], std::stod(lineV[2]), lineV[3], std::stod(lineV[4]),
                                     std::stod(lineV[5]), lineV[6], std::stod(lineV[7]), std::stod(lineV[8])));
 
-            if (newTransactions.size() == (size_t) size) {
+            if (newTransactions.size() == transactionPerBlock) {
                 addBlock(newTransactions);
                 newTransactions.clear();
-                size = dis(gen);
             }
         }
         if (newTransactions.size() > 0) {
@@ -79,13 +73,12 @@ std::string blockchain::jsonify() const {
 }
 
 void blockchain::addBlock(const dynamic_array<transaction *> &newTransactions) {
-    for (const auto &t: newTransactions) {
-        transactions.push_back(t);
-    }
+    indexNewData(newTransactions);
 
     lastBlock->next = new block<transaction *>(lastBlock->getIndex() + 1, newTransactions, &lastBlock->hash);
     lastBlock = lastBlock->next;
     lastBlock->mineBlock(difficulty);
+    _size++;
 }
 
 block<transaction *> *blockchain::getLastBlock() {
@@ -101,6 +94,10 @@ void blockchain::indexNewData(const dynamic_array<transaction *> &newT) {
         maxHeap.push(std::make_pair(t->getAmount(), t));
         minHeap.push(std::make_pair(t->getAmount(), t));
     }
+}
+
+size_t blockchain::getSize() const {
+    return _size;
 }
 
 

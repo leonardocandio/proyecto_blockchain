@@ -20,6 +20,7 @@ int main() {
                         crow::json::wvalue x;
                         x["blocks"] = crow::json::load(bc.jsonify());
                         crow::response res(x);
+                        std::cout << bc.getSize();
                         return res;
                     });
 

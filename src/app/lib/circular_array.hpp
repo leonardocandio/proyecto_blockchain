@@ -7,7 +7,7 @@
 
 #include "dynamic_array.hpp"
 
-
+//class conteiner main
 template<class T>
 class circular_array : public dynamic_array<T> {
 public:

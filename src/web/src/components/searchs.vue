@@ -27,10 +27,10 @@
   </div>-->
 
   <!--<div id="test-slider"></div>-->
+  </div>
   <div class="container section">
-        <table class="highlight">
+        <table id="tabla" class="highlight" hidden = "hidden">
             <thead>
-                <th>Index</th>
                 <th>newbalanceDest</th>
                 <th>oldbalanceDest</th>
                 <th>nameOrig</th>
@@ -40,10 +40,10 @@
                 <th>oldbalanceOrg</th>
                 <th>nameDest</th>
                 <th>newbalanceOrg</th>
+                <th>Cantidad</th>
             </thead>
             <tbody v-for="transaction in search" :key="search">
-                <tr v-for="tran in transaction.transactions">
-                    <td>{{ transaction.index }}</td>
+                <tr v-for="tran in transaction">
                     <td>{{ tran.newbalanceDest }}</td>
                     <td>{{ tran.oldbalanceDest }}</td>
                     <td>{{ tran.nameOrig }}</td>
@@ -56,8 +56,7 @@
                 </tr>
             </tbody>
         </table>
-</div>
-  </div>
+    </div>>
 </template>
 
 <script>
@@ -91,16 +90,20 @@ export default {
           const transaction = { ...this.block1 };
           console.log("body: ", transaction);
           Services.searchBlock(transaction).then((response) => {
-          this.search = response.data.search;
+            this.search = response.data,
+            console.log(response)
           });
         }
         else if(event.target.value == "2"){
           const transaction = { ...this.block2 };
           console.log("body: ", transaction);
           Services.searchBlock(transaction).then((response) => {
-          this.search = response.data.search;
+            this.search = response.data,
+            console.log(response)
           });
         }
+        let element = document.getElementById("tabla");
+        element.removeAttribute("hidden");
         }
       },
   }

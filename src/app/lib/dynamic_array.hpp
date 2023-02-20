@@ -121,11 +121,11 @@ public:
         _size = 0;
     }
 
-    virtual T &operator[](int index) {
+    virtual T &operator[](size_t index) {
         return array[index];
     }
 
-    virtual const T &operator[](int index) const {
+    virtual const T &operator[](size_t index) const {
         return array[index];
     }
 

@@ -29,6 +29,10 @@ public:
     block<transaction *> *getLastBlock();
 
 
+    dynamic_array<transaction *> getTransactionsByKey(std::string key);
+
+    [[nodiscard]] size_t getSize() const;
+
 
 private:
 
@@ -39,15 +43,34 @@ private:
     block<transaction *> *lastBlock;
     block<transaction *> *firstBlock;
     size_t _size;
-public:
-    size_t getSize() const;
 
-private:
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
 
     circular_array<transaction *> transactions;
+
+    enum searchType {
+        MAX, MIN
+    };
+
+    searchType resolveSearchType(std::string key);
+
 };
+
+
+template<typename T>
+std::string jsonifyArray(const dynamic_array<T> &array) {
+    std::stringstream ss;
+    ss << "[";
+    for (size_t i = 0; i < array.size(); ++i) {
+        ss << array[i]->jsonify();
+        if (i != array.size() - 1) {
+            ss << ",";
+        }
+    }
+    ss << "]";
+    return ss.str();
+}
 
 
 #endif //PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H

@@ -100,6 +100,32 @@ size_t blockchain::getSize() const {
     return _size;
 }
 
+dynamic_array<transaction *> blockchain::getTransactionsByKey(std::string key) {
+    dynamic_array<transaction *> result;
+    switch (resolveSearchType(key)) {
+        case MAX:
+            result.push_back(maxHeap.top().second);
+            break;
+        case MIN:
+            result.push_back(minHeap.top().second);
+            break;
+        default:
+            throw std::invalid_argument("Invalid search type");
+    }
+    return result;
+}
+
+blockchain::searchType blockchain::resolveSearchType(std::string key) {
+    if (key == "max") {
+        return MAX;
+    } else if (key == "min") {
+        return MIN;
+    } else {
+        throw std::invalid_argument("Invalid search type");
+    }
+}
+
+
 
 
 

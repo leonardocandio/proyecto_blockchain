@@ -17,7 +17,6 @@ transaction::transaction(unsigned short step, std::string type, double amount, s
 
 std::string transaction::jsonify() const {
     std::stringstream ss;
-    //using raw strings, jsonify the transaction
     ss << R"({"step":)" << step
        << R"(,"type":")" << type
        << R"(","amount":)" << amount

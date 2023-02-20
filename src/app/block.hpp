@@ -10,6 +10,7 @@
 #include "algorithm"
 #include "lib/dynamic_array.hpp"
 
+//class block
 template<typename T>
 class block {
 public:

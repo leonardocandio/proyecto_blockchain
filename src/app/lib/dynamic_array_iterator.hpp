@@ -7,6 +7,7 @@
 
 #include "dynamic_array.hpp"
 
+//iterator for dynamic array
 template<class T>
 class dynamic_array_iterator {
 public:

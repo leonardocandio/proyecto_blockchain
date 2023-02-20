@@ -8,6 +8,7 @@
 #include "functional"
 #include "dynamic_array.hpp"
 
+//heap method for index(max and min values in transactions)
 template<class IndexT, class DataT>
 class heap : public dynamic_array<std::pair<IndexT, DataT>> {
 public:

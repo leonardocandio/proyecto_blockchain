@@ -10,6 +10,7 @@
 #include "sstream"
 #include "dynamic_array_iterator.hpp"
 
+//class dynamic array
 template<class T>
 class dynamic_array {
 public:

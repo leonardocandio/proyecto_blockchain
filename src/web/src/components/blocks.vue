@@ -136,7 +136,7 @@ export default {
   data() {
     return {
       block: {
-        transactions: {
+        transactions: [{
         step: "",
         type: "",
         amount: "",
@@ -146,7 +146,7 @@ export default {
         nameDest: "",
         oldbalanceDest: "",
         newbalanceDest: "",
-        }
+        }]
       },
 
       blocks : [],

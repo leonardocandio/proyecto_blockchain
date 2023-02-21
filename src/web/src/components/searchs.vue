@@ -72,7 +72,7 @@ export default {
 
       block2: {
         key: "max",
-        limit:"1"
+        limit:"5"
       },
 
       search : [],

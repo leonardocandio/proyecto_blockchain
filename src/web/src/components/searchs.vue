@@ -40,7 +40,6 @@
                 <th>oldbalanceOrg</th>
                 <th>nameDest</th>
                 <th>newbalanceOrg</th>
-                <th>Cantidad</th>
             </thead>
             <tbody v-for="transaction in search" :key="search">
                 <tr v-for="tran in transaction">
@@ -68,10 +67,12 @@ export default {
     return {
       block1: {
         key: "min",
+        limit:"1"
       },
 
       block2: {
         key: "max",
+        limit:"1"
       },
 
       search : [],

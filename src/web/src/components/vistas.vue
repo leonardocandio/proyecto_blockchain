@@ -23,7 +23,9 @@
             <td>{{ block.nonce }}</td>
             <td>{{ block.index }}</td>
             <td>{{ block.prevhash }}</td>
-            <td><router-link to="/transactions">Acceda al contenido de las transacciones</router-link></td>
+            <td v-on:click="Click(block.index)">
+              <router-link to="/transactions">Acceda al contenido de las transacciones</router-link>
+            </td>
             <td>{{ block.timestamp }}</td>
           </tr>
         </tbody>
@@ -55,8 +57,15 @@ export default{
         getBlocks() {
         Services.getBlocks().then((response) => {
         this.blocks = response.data.blocks;
-      });
-    },
+          })
+        },
+
+        Click(index) {
+          if(localStorage.getItem('Index') != null){
+            localStorage.removeItem('Index')
+          }
+          localStorage.setItem('Index', index)
+        }
     }
 }
 

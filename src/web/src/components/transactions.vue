@@ -1,9 +1,11 @@
 <template>
 <h4><center>Transacciones dentro del bloque</center></h4>
 <div class="container section">
-        <table class="highlight">
+    <div class="container section">
+    <h4><center>Busqueda dentro del Blockchain</center></h4>
+    </div>
+    <table class="highlight" id="reload">
             <thead>
-                <th>Index</th>
                 <th>newbalanceDest</th>
                 <th>oldbalanceDest</th>
                 <th>nameOrig</th>
@@ -15,8 +17,7 @@
                 <th>newbalanceOrg</th>
             </thead>
             <tbody v-for="transaction in blocks" :key="blocks">
-                <tr v-for="tran in transaction.transactions">
-                    <td>{{ transaction.index }}</td>
+                <tr v-for="tran in transaction.transactions" v-if="transaction.index === index_number">
                     <td>{{ tran.newbalanceDest }}</td>
                     <td>{{ tran.oldbalanceDest }}</td>
                     <td>{{ tran.nameOrig }}</td>
@@ -29,25 +30,32 @@
                 </tr>
             </tbody>
         </table>
+        <center><a class="waves-effect waves-light btn" onclick="location.reload()">Actualizar</a></center>
+
 </div>
 </template>
 
 <script>
 import Services from "@/services/Services";
 import M from "materialize-css";
+const index = localStorage.getItem('Index');
+var index_number = parseInt(index);
 
 export default{
+
     data() {
     return {
       blocks : [],
-        };
+      index_number
+    };
     },
 
     created() {
-    this.getBlocks();
+    this.getBlocks()
     },
 
     mounted(){
+        M.AutoInit();
         var elems = document.querySelectorAll("select");
         this.select_instances = M.FormSelect.init(elems, null);
     },
@@ -56,9 +64,8 @@ export default{
         getBlocks() {
         Services.getBlocks().then((response) => {
         this.blocks = response.data.blocks;
-            });
+        });
         },
-
     },
 }
 

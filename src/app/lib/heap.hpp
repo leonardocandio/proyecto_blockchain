@@ -21,9 +21,8 @@ public:
 
     }
 
-    heap(const heap &other) : comparator(other.comparator), elements(other.elements) {
-        this->_size = other._size;
-    }
+    heap(const heap &other) : dynamic_array<std::pair<IndexT, DataT>>(other), comparator(other.comparator),
+                              elements(other.elements) {}
 
     heap &operator=(const heap &other) {
         if (this != &other) {

@@ -1,8 +1,26 @@
 <template>
 <h4><center>Transacciones dentro del bloque</center></h4>
-<div class="container section">
+<div id="Loading">
+    <center>
+    <h6>Presione el boton de cargar</h6>    
+    <div class="preloader-wrapper big active">
+    <div class="spinner-layer spinner-blue-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+            </div>
+        </div>
+    </center>
+    <div>
+        <center><a class="waves-effect waves-light btn" v-on:click="LoadTransactions()">Cargar</a></center>
+    </div>
+    </div>
+<div class="container section" id="Tablita">
     <div class="container section">
-    <h4><center>Busqueda dentro del Blockchain</center></h4>
     </div>
     <table class="highlight" id="reload">
             <thead>
@@ -30,9 +48,7 @@
                 </tr>
             </tbody>
         </table>
-        <center><a class="waves-effect waves-light btn" onclick="location.reload()">Actualizar</a></center>
-
-</div>
+    </div>
 </template>
 
 <script>
@@ -66,6 +82,10 @@ export default{
         this.blocks = response.data.blocks;
         });
         },
+
+        LoadTransactions(){
+            window.location.reload()
+        }
     },
 }
 

@@ -4,13 +4,14 @@ project(proyecto_blockchain VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Wpedantic")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer")
 find_package(Crow CONFIG REQUIRED)
 
 add_executable(proyecto_blockchain
         src/main.cpp
         src/app/block.hpp
-        src/app/blockchain.cpp src/app/transaction.cpp src/app/transaction.h src/app/lib/dynamic_array.hpp src/app/lib/dynamic_array_iterator.hpp src/app/lib/heap.hpp src/app/lib/circular_array.hpp)
+        src/app/blockchain.cpp src/app/transaction.cpp src/app/transaction.h src/app/lib/dynamic_array.hpp src/app/lib/dynamic_array_iterator.hpp src/app/lib/heap.hpp src/app/lib/circular_array.hpp src/app/lib/patriciatrie.hpp src/app/lib/lazycsv.hpp)
 
 if (MINGW)
     find_library(WSOCK32_LIBRARY wsock32)

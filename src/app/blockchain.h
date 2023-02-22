@@ -5,16 +5,16 @@
 #ifndef PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
 #define PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
 
-#include "block.hpp"
 #include "../app/lib/dynamic_array.hpp"
-#include "fstream"
-#include "transaction.h"
 #include "../app/lib/heap.hpp"
+#include "block.hpp"
+#include "fstream"
 #include "lib/circular_array.hpp"
+#include "transaction.h"
 
 class blockchain {
 public:
-    blockchain();
+    blockchain(size_t _size = 0, unsigned short difficulty = 2);
 
     void addBlock(const dynamic_array<transaction *> &newT);
 
@@ -22,7 +22,7 @@ public:
 
     virtual ~blockchain();
 
-    void addFromFile(const std::string &path, bool skipFirstLine = true, size_t transactionsPerBlock = 10);
+    void addFromFile(const std::string &path, size_t transactionsPerBlock = 10);
 
     [[nodiscard]] std::string jsonify() const;
 
@@ -35,14 +35,13 @@ public:
 
 
 private:
-
     void indexNewData(const dynamic_array<transaction *> &newT);
 
+    size_t _size;
     short unsigned int difficulty;
 
+    block<transaction *> *firstBlock = new block<transaction *>();
     block<transaction *> *lastBlock;
-    block<transaction *> *firstBlock;
-    size_t _size;
 
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
@@ -50,11 +49,11 @@ private:
     circular_array<transaction *> transactions;
 
     enum searchType {
-        MAX, MIN
+        MAX,
+        MIN
     };
 
-    searchType resolveSearchType(std::string key);
-
+    searchType resolveSearchType(std::string_view const &key) const;
 };
 
 
@@ -73,4 +72,4 @@ std::string jsonifyArray(const dynamic_array<T> &array) {
 }
 
 
-#endif //PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
+#endif//PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H

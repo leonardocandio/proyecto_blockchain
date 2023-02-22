@@ -1,25 +1,27 @@
 <template>
-    <div class="container section">
-    <h4><center>Agregar registro</center></h4>
+  <div class="container section">
+    <h4>
+      <center>Agregar registro</center>
+    </h4>
     <form class="col s12" @submit.prevent="AgregarBlock">
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-          <input 
-          v-model = "block.transactions.newbalanceDest"
-          type="number"
-          step="0.01"
-          class="validate"
-          required>
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.newbalanceDest"
+            type="number"
+            step="0.01"
+            class="validate"
+            required>
           <label for="transaction">newbalanceDest</label>
         </div>
       </div>
-    
+
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-            v-model = "block.transactions.oldbalanceDest"
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.oldbalanceDest"
             type="number"
             step="0.01"
             class="validate"
@@ -29,9 +31,9 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-            v-model = "block.transactions.nameOrig"
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.nameOrig"
             type="text"
             class="validate"
             required>
@@ -40,142 +42,143 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.transactions.step"
-          type="number"
-          class="validate"
-          required>
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.step"
+            type="number"
+            class="validate"
+            required>
           <label for="transaction">step</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.transactions.type"
-          type="text"
-          class="validate"
-          required>
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.type"
+            type="text"
+            class="validate"
+            required>
           <label for="transaction">Type</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.transactions.amount"
-          type="number"
-          step="0.01"
-          class="validate"
-          required>
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.amount"
+            type="number"
+            step="0.01"
+            class="validate"
+            required>
           <label for="transaction">Amount</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.transactions.oldbalanceOrg"
-          type="number"
-          step="0.01"
-          class="validate"
-          required>
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.oldbalanceOrg"
+            type="number"
+            step="0.01"
+            class="validate"
+            required>
           <label for="transaction">oldbalanceOrg</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.transactions.nameDest"
-          type="text"
-          class="validate"
-          required>
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.nameDest"
+            type="text"
+            class="validate"
+            required>
           <label for="transaction">nameDest</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-            <i class="material-icons prefix">add_circle</i>
-            <input 
-          v-model = "block.transactions.newbalanceOrig"
-          type="number"
-          step="0.01"
-          class="validate"
-          required>
+          <i class="material-icons prefix">add_circle</i>
+          <input
+            v-model="transaction.newbalanceOrig"
+            type="number"
+            step="0.01"
+            class="validate"
+            required>
           <label for="transaction">newbalanceOrig</label>
         </div>
       </div>
       <button class="btn waves-effect waves-light" type="submit" name="enviar">Subir
         <i class="material-icons right">open_in_browser</i>
-        </button>
-    </form>  
+      </button>
+    </form>
     <div class="container section">
-        <h4><center>O ingrese un archivo de texto</center></h4>
-        <form action="#">
-            <div class="file-field input-field">
-            <div class="btn">
-             <span>File</span>
-             <input type="file">
-            </div>
-            <div class="file-path-wrapper">
-             <input class="file-path validate" type="text">
-            </div>
+      <h4>
+        <center>O ingrese un archivo de texto</center>
+      </h4>
+      <form action="#">
+        <div class="file-field input-field">
+          <div class="btn">
+            <span>File</span>
+            <input type="file">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+          </div>
+        </div>
+      </form>
     </div>
-  </form>
-      </div>
-    </div>
+  </div>
 </template>
 
 <script>
 import Services from "@/services/Services";
 import M from "materialize-css";
+import transactions from "@/components/transactions.vue";
 
 export default {
   data() {
     return {
-      block: {
-        transactions: {
-        step: "",
+      transaction: {
+        step: 0,
         type: "",
-        amount: "",
+        amount: 0,
         nameOrig: "",
-        oldbalanceOrg: "",
-        newbalanceOrig: "",
+        oldbalanceOrg: 0,
+        newbalanceOrig: 0,
         nameDest: "",
-        oldbalanceDest: "",
-        newbalanceDest: "",
-        }
+        oldbalanceDest: 0,
+        newbalanceDest: 0
       },
 
-      blocks : [],
+      transactions: []
     };
   },
 
   created() {
     this.getBlocks();
-    },
+  },
 
-    mounted(){
-        var elems = document.querySelectorAll("select");
-        this.select_instances = M.FormSelect.init(elems, null);
-    },
+  mounted() {
+    let elems = document.querySelectorAll("select");
+    this.select_instances = M.FormSelect.init(elems, null);
+  },
 
-    methods: {
-        getBlocks() {
-        Services.getBlocks().then((response) => {
+  methods: {
+    getBlocks() {
+      Services.getBlocks().then((response) => {
         this.blocks = response.data.blocks;
-          });
-        },
+      });
+    },
 
-        AgregarBlock(){
-          const block = { ...this.block };
-          console.log("body: ", block);
-          Services.postBlock(block).then((response) => {
-          this.blocks = response.data;
-          });
-        },
+    AgregarBlock() {
+      this.transactions.push(this.transaction);
+      Services.postBlock({"transactions" : this.transactions}).then((response) => {
+        console.log(response);
+      });
+      this.transactions.clear();
     }
-}
+  }
+};
 </script>

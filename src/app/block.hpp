@@ -5,10 +5,10 @@
 #ifndef PROYECTO_BLOCKCHAIN_BLOCK_HPP
 #define PROYECTO_BLOCKCHAIN_BLOCK_HPP
 
-#include "ctime"
-#include "sstream"
 #include "algorithm"
+#include "ctime"
 #include "lib/dynamic_array.hpp"
+#include "sstream"
 
 //class block
 template<typename T>
@@ -24,7 +24,7 @@ public:
 
     block &operator=(const block &other);
 
-    void mineBlock(uint8_t difficulty);
+    void mineBlock(unsigned short difficulty);
 
     [[nodiscard]] const std::size_t &getHash() const;
 
@@ -50,18 +50,17 @@ public:
 
 
 private:
-    std::string serializeTransactions() const;
+    [[nodiscard]] std::string serializeTransactions() const;
 
-    std::string jsonifyTransactions() const;
+    [[nodiscard]] std::string jsonifyTransactions() const;
 
-    size_t index;
+    size_t index = 0;
     dynamic_array<T> transactions;
-    std::time_t timestamp;
-    std::size_t hash;
-    size_t nonce;
-    std::size_t *prevHash;
-    block *next;
-
+    std::time_t timestamp = 0;
+    std::size_t hash = 0;
+    size_t nonce = -1;
+    std::size_t *prevHash = new size_t(0);
+    block *next = nullptr;
 };
 
 template<typename T>
@@ -88,21 +87,13 @@ std::string block<T>::jsonifyTransactions() const {
 }
 
 template<typename T>
-block<T>::block() {
-    index = 0;
-    timestamp = 0;
-    hash = -1;
-    nonce = -1;
-    prevHash = new std::size_t(0);
-    next = nullptr;
-}
+block<T>::block() = default;
 
 template<typename T>
-block<T>::~block() {
-}
+block<T>::~block() = default;
 
 template<typename T>
-void block<T>::mineBlock(uint8_t difficulty) {
+void block<T>::mineBlock(unsigned short difficulty) {
     std::string target(difficulty, '0');
     do {
         nonce++;
@@ -139,15 +130,11 @@ const size_t &block<T>::getIndex() const {
 }
 
 template<typename T>
-block<T>::block(size_t index, dynamic_array<T> transactions, std::size_t *prevHash) {
-    block::index = index;
-    block::prevHash = prevHash;
-    block::transactions = std::move(transactions);
+block<T>::block(size_t index, dynamic_array<T> transactions, std::size_t *prevHash) : index(index),
+                                                                                      transactions(std::move(transactions)),
+                                                                                      prevHash(prevHash) {
     timestamp = std::time(nullptr);
     hash = calculateHash();
-    nonce = 0;
-    next = nullptr;
-
 }
 
 
@@ -157,16 +144,10 @@ const std::size_t &block<T>::getHash() const {
 }
 
 template<typename T>
-block<T>::block(block &&other) noexcept {
-    index = other.index;
-    transactions = other.transactions;
-    timestamp = other.timestamp;
-    hash = other.hash;
-    nonce = other.nonce;
-    prevHash = other.prevHash;
+block<T>::block(block &&other) noexcept : index(other.index), transactions(std::move(other.transactions)),
+                                          timestamp(other.timestamp), hash(other.hash), nonce(other.nonce),
+                                          prevHash(other.prevHash), next(other.next) {
     other.prevHash = nullptr;
-    next = other.next;
-
 }
 
 template<typename T>
@@ -175,13 +156,9 @@ bool block<T>::isValid() const {
 }
 
 template<typename T>
-block<T>::block(const block &other) {
-    index = other.index;
-    transactions = other.transactions;
-    timestamp = other.timestamp;
-    hash = other.hash;
-    nonce = other.nonce;
-    prevHash = new std::size_t(*other.prevHash);
+block<T>::block(const block &other) : index(other.index), transactions(other.transactions),
+                                      timestamp(other.timestamp), hash(other.hash), nonce(other.nonce),
+                                      prevHash(new std::size_t(*other.prevHash)), next(other.next) {
 }
 
 template<typename T>
@@ -200,7 +177,8 @@ block<T> &block<T>::operator=(const block &other) {
 template<typename T>
 std::string block<T>::jsonify() const {
     std::stringstream ss;
-    ss << "{" << R"("index" : )" << index << ","
+    ss << "{"
+       << R"("index" : )" << index << ","
        << R"("timestamp" : )" << timestamp << ","
        << R"("transactions" : )" << jsonifyTransactions() << ","
        << R"("hash" : ")" << hash << R"(",)"
@@ -216,8 +194,7 @@ std::string block<T>::serialize() const {
     std::stringstream ss;
     ss << index << timestamp << serializeTransactions() << nonce << *prevHash;
     return ss.str();
-
 }
 
 
-#endif //PROYECTO_BLOCKCHAIN_BLOCK_HPP
+#endif//PROYECTO_BLOCKCHAIN_BLOCK_HPP

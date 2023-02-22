@@ -24,7 +24,7 @@ public:
         return *this;
     }
 
-    virtual const dynamic_array_iterator operator++(int) {
+    virtual dynamic_array_iterator operator++(int) {
         dynamic_array_iterator old = *this;
         ++(*this);
         return old;
@@ -35,7 +35,7 @@ public:
         return *this;
     }
 
-    const dynamic_array_iterator operator--(int) {
+    dynamic_array_iterator operator--(int) {
         dynamic_array_iterator old = *this;
         --(*this);
         return old;
@@ -62,4 +62,4 @@ private:
     T &retrieve() const { return *current; }
 };
 
-#endif //PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_ITERATOR_HPP
+#endif//PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_ITERATOR_HPP

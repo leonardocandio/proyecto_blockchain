@@ -2,8 +2,8 @@
 // Created by rvilc on 22/02/2023.
 //
 
-#ifndef PATRICIATRIE_H
-#define PATRICIATRIE_H
+#ifndef PROYECTO_BLOCKCHAIN_PATRICIATRIE_HPP
+#define PROYECTO_BLOCKCHAIN_PATRICIATRIE_HPP
 
 #include "dynamic_array.hpp"
 #include "trie.hpp"
@@ -18,10 +18,10 @@ const unsigned ALPHA_SIZE = 26;
 template<class DataT>
 class TriePatricia : public Trie {
 private:
-    struct TrieNode : public dynamic_array<DataT> {
+    struct TrieNode {
         TrieNode **children;
         string prefix;
-        dynamic_array<DataT> endWord;//array para almacenar punteros a transactions
+        dynamic_array<DataT> endWord; //array para almacenar punteros a transactions
 
         TrieNode() {
             children = new TrieNode *[ALPHA_SIZE];
@@ -116,7 +116,7 @@ public:
                 }
             }
         }
-        return (current->endWord.size() > 0)
+        return (current->endWord.size() > 0);
     }
     void remove(string key) {
         if (!search(key)) {
@@ -209,4 +209,4 @@ private:
         return true;
     }
 };
-#endif// PATRICIATRIE_H
+#endif

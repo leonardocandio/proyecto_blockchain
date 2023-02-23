@@ -2,8 +2,8 @@
 // Created by rvilc on 22/02/2023.
 //
 
-#ifndef PATRICIATRIE_TRIE_H
-#define PATRICIATRIE_TRIE_H
+#ifndef PROYECTO_BLOCKCHAIN_TRIE_HPP
+#define PROYECTO_BLOCKCHAIN_TRIE_HPP
 #include <string>
 
 using namespace std;
@@ -18,4 +18,4 @@ public:
     virtual string toString(string sep = ",") = 0;
 };
 
-#endif//PATRICIATRIE_TRIE_H
+#endif

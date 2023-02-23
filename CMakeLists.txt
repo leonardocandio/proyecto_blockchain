@@ -4,7 +4,10 @@ project(proyecto_blockchain VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Wpedantic")
-set(GCC_SANITIZER_FLAGS "-fsanitize=address -fno-sanitize-recover=all -fno-omit-frame-pointer")
+
+if (!MINGW)
+    set(GCC_SANITIZER_FLAGS "-fsanitize=address -fno-sanitize-recover=all -fno-omit-frame-pointer")
+endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} ${GCC_SANITIZER_FLAGS}")
 find_package(Crow CONFIG REQUIRED)

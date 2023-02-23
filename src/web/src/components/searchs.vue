@@ -21,10 +21,16 @@
     <label>Ingresa el tipo de búsqueda</label>
   </div>
 
-  <!--<div id = "input_text" class="input-field col s12">
-        <input id="input" type="text" class="validate">
+  <div class="input-field col s6" id="Ingreso" hidden="true">
+        <input 
+        v-model="block2.limit"
+        id="input"
+        type="text"
+        class="validate"
+        required>
         <label for="input">Ingrese el parametro</label>
-  </div>-->
+        <button class="btn waves-effect waves-light" v-on:click="Busqueda()">Ingresar</button>
+  </div>
 
   <!--<div id="test-slider"></div>-->
   </div>
@@ -72,7 +78,7 @@ export default {
 
       block2: {
         key: "max",
-        limit:"5"
+        limit:""
       },
 
       search : [],
@@ -88,23 +94,29 @@ export default {
   methods: {
       BuscarBlock: function(event){
         if(event.target.value == "1"){
+          document.getElementById('Ingreso').setAttribute('hidden',true)
           const transaction = { ...this.block1 };
           console.log("body: ", transaction);
           Services.searchBlock(transaction).then((response) => {
             this.search = response.data,
             console.log(response)
           });
+          let element = document.getElementById("tabla");
+          element.removeAttribute("hidden");
         }
         else if(event.target.value == "2"){
+          document.getElementById('Ingreso').removeAttribute('hidden')
+        }
+        },
+        Busqueda(){
           const transaction = { ...this.block2 };
           console.log("body: ", transaction);
           Services.searchBlock(transaction).then((response) => {
             this.search = response.data,
             console.log(response)
           });
-        }
-        let element = document.getElementById("tabla");
-        element.removeAttribute("hidden");
+          let element = document.getElementById("tabla");
+          element.removeAttribute("hidden");
         }
       },
   }

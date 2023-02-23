@@ -7,13 +7,13 @@
 #include <string>
 
 using namespace std;
-
-class Trie {
+template<class DataT>
+class Trie{
 public:
-    virtual void insert(string key) = 0;
+
+    virtual void insert(string key, DataT coming) = 0;
     virtual bool search(string key) = 0;
     virtual void remove(string key) = 0;
-
     //imprime ordenado
     virtual string toString(string sep = ",") = 0;
 };

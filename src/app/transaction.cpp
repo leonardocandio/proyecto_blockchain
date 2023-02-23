@@ -45,3 +45,7 @@ std::string transaction::serialize() const {
 double transaction::getAmount() const {
     return amount;
 }
+
+std::string transaction::getNameDest() const{
+    return nameDest;
+}

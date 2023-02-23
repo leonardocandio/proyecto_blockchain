@@ -11,6 +11,7 @@
 #include "fstream"
 #include "lib/circular_array.hpp"
 #include "transaction.h"
+#include "../app/lib/patriciatrie.hpp"
 
 class blockchain {
 public:
@@ -45,6 +46,7 @@ private:
 
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
+    TriePatricia<transaction> patriciatrie;
 
     circular_array<transaction *> transactions;
 

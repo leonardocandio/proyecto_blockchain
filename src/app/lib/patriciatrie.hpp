@@ -16,7 +16,7 @@ using namespace std;
 
 const unsigned ALPHA_SIZE = 26;
 template<class DataT>
-class TriePatricia : public Trie {
+class TriePatricia : public Trie<DataT> {
 private:
     struct TrieNode {
         TrieNode **children;
@@ -91,7 +91,8 @@ public:
                 }
             }
         }
-        if (!count(current->endWord.begin(), current->endWord.end(), coming)) current->endWord.push_back(coming);
+        //if (!count(current->endWord.begin(), current->endWord.end(), coming))
+        current->endWord.push_back(coming);
     }
 
     bool search(string key) {

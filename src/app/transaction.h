@@ -20,6 +20,7 @@ public:
     [[nodiscard]] std::string serialize() const;
 
     [[nodiscard]] double getAmount() const;
+    [[nodiscard]] std::string getNameDest() const;
 
 private:
     unsigned short step{};

@@ -22,6 +22,7 @@ int main() {
 
     CROW_ROUTE(app, "/blocks")
             .methods("POST"_method)([&bc](const crow::request &req) {
+                std::cout << req.body << std::endl;
                 crow::json::rvalue x = crow::json::load(req.body);
                 if (!x) {
                     return crow::response(400);

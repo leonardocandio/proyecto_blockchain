@@ -3,8 +3,7 @@
 //
 
 #include "blockchain.h"
-#include "iostream"
-#include "lib/lazycsv.hpp"
+#include "sstream"
 #include <utility>
 
 bool blockchain::isChainValid() const { return false; }
@@ -26,23 +25,38 @@ blockchain::~blockchain() {
     }
 }
 
-void blockchain::addFromFile(const std::string &path, size_t transactionPerBlock) {
-    lazycsv::parser parser{path};
+void blockchain::addFromFile(const std::string &path, bool skipFirstLine, size_t transactionPerBlock) {
+
+    std::fstream file(path, std::ios::in);
     dynamic_array<transaction *> newTransactions;
-    for (const auto row: parser) {
-        const auto [step, type, amount, nameOrig, oldbalanceOrg, newbalanceOrig,
-                    nameDest, oldbalanceDest, newbalanceDest] = row.cells(0, 1, 2, 3, 4, 5, 6, 7, 8);
-        auto *t = new transaction(std::stoi(step.unescaped()), type.unescaped(), std::stod(amount.unescaped()), nameOrig.unescaped(), std::stod(oldbalanceOrg.unescaped()),
-                                  std::stod(newbalanceOrig.unescaped()),
-                                  nameDest.unescaped(), std::stod(oldbalanceDest.unescaped()), std::stod(newbalanceDest.unescaped()));
-        newTransactions.push_back(t);
-        if (newTransactions.size() == transactionPerBlock) {
+    if (file.is_open()) {
+        std::string line;
+        if (skipFirstLine) std::getline(file, line);
+        while (std::getline(file, line)) {
+            if (line.empty()) {
+                continue;
+            }
+            std::stringstream ss(line);
+            std::string item;
+            dynamic_array<std::string> lineV;
+            while (std::getline(ss, item, ',')) {
+                lineV.push_back(item);
+            }
+            newTransactions.push_back(
+                    new transaction(std::stoi(lineV[0]), lineV[1], std::stod(lineV[2]), lineV[3], std::stod(lineV[4]),
+                                    std::stod(lineV[5]), lineV[6], std::stod(lineV[7]), std::stod(lineV[8])));
+
+            if (newTransactions.size() == transactionPerBlock) {
+                addBlock(newTransactions);
+                newTransactions.clear();
+            }
+        }
+        if (newTransactions.size() > 0) {
             addBlock(newTransactions);
-            newTransactions.clear();
         }
     }
-    if (newTransactions.size()) addBlock(newTransactions);
 }
+
 
 std::string blockchain::jsonify() const {
     std::stringstream ss;

@@ -22,7 +22,7 @@ public:
 
     virtual ~blockchain();
 
-    void addFromFile(const std::string &path, size_t transactionsPerBlock = 10);
+    void addFromFile(const std::string &path, bool skipFirstLine = true, size_t transactionPerBlock = 10);
 
     [[nodiscard]] std::string jsonify() const;
 

@@ -36,6 +36,8 @@
 <script>
 import Services from "@/services/Services";
 import M from "materialize-css";
+const charge = localStorage.getItem('loading');
+var charge_num = parseInt(charge);
 
 export default{
     data() {
@@ -51,6 +53,7 @@ export default{
     mounted(){
         var elems = document.querySelectorAll("select");
         this.select_instances = M.FormSelect.init(elems, null);
+        this.TransacctionsView();
     },
 
     methods: {
@@ -65,7 +68,15 @@ export default{
             localStorage.removeItem('Index')
           }
           localStorage.setItem('Index', index)
-        }
+        },
+
+        TransacctionsView(){
+          if(charge_num != 0){
+            localStorage.removeItem('loading')
+            window.location.reload()
+          }
+          localStorage.setItem('loading', 0)
+        },
     }
 }
 

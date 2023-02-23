@@ -19,7 +19,7 @@
         <center><a class="waves-effect waves-light btn" v-on:click="LoadTransactions()">Cargar</a></center>
     </div>
     </div>
-<div class="container section" id="Tablita">
+<div class="container section" id="contenido" hidden="true">
     <div class="container section">
     </div>
     <table class="highlight" id="reload">
@@ -56,6 +56,8 @@ import Services from "@/services/Services";
 import M from "materialize-css";
 const index = localStorage.getItem('Index');
 var index_number = parseInt(index);
+const charge = localStorage.getItem('loading');
+var charge_num = parseInt(charge);
 
 export default{
 
@@ -74,6 +76,7 @@ export default{
         M.AutoInit();
         var elems = document.querySelectorAll("select");
         this.select_instances = M.FormSelect.init(elems, null);
+        this.TestHidden();
     },
 
     methods: {
@@ -85,6 +88,16 @@ export default{
 
         LoadTransactions(){
             window.location.reload()
+            if(charge_num == 0){
+                localStorage.setItem('loading',1)
+            }
+        },
+
+        TestHidden(){
+            if(charge_num == 1){
+                document.getElementById('Loading').setAttribute('hidden',true)
+                document.getElementById('contenido').removeAttribute('hidden')
+            }
         }
     },
 }

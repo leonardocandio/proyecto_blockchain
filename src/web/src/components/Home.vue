@@ -1,7 +1,7 @@
 <template>
   <div class="container section">
     <div class="row">
-      <div class="col s3">
+      <div class="col s4">
         <div class="card large">
           <div class="card-image">
             <img src="https://i.imgur.com/oXZ9FeNh.png" />
@@ -52,4 +52,25 @@
   </div>
 </template>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+<script>
+
+import M from "materialize-css";
+
+export default {
+  mounted(){
+    M.AutoInit()
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.carousel');
+    var instances = M.Carousel.init(elems);
+    });
+}
+}
+</script>
+
+<style>
+
+body{
+  display:ruby;
+}
+
+</style>

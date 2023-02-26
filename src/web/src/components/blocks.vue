@@ -135,7 +135,6 @@
 <script>
 import Services from "@/services/Services";
 import M from "materialize-css";
-import transactions from "@/components/transactions.vue";
 
 export default {
   data() {
@@ -177,7 +176,6 @@ export default {
       Services.postBlock({"transactions" : this.transactions}).then((response) => {
         console.log(response);
       });
-      this.transactions.clear();
     }
   }
 };

@@ -34,6 +34,7 @@
 
   <!--<div id="test-slider"></div>-->
   </div>
+  
   <div class="container section">
         <table id="tabla" class="highlight" hidden = "hidden">
             <thead>
@@ -61,7 +62,7 @@
                 </tr>
             </tbody>
         </table>
-    </div>>
+    </div>
 </template>
 
 <script>
@@ -121,4 +122,3 @@ export default {
       },
   }
 </script>
-

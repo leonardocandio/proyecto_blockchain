@@ -46,7 +46,7 @@ private:
 
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
-    TriePatricia<transaction> patriciatrie;
+    //TriePatricia<transaction> patriciatrie;
 
     circular_array<transaction *> transactions;
 

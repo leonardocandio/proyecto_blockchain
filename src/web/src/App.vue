@@ -1,5 +1,6 @@
 <template>
-  <nav>
+  <HeaderBar>
+    <nav>
     <div class="nav-wrapper blue darken-2">
       <a href="" class="brand-logo right"
         >BlockChain
@@ -15,7 +16,10 @@
       </ul>
     </div>
   </nav>
-  <router-view />
+  </HeaderBar>
+  <div class="content">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
@@ -27,4 +31,3 @@ export default {
 },
 }
 </script>
-

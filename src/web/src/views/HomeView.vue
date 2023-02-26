@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <h1></h1>
     <Home />
   </div>
 </template>
@@ -16,3 +15,10 @@ export default {
   },
 };
 </script>
+
+<style>
+body{
+  height: 100%;
+  width: 100%;
+}
+</style>

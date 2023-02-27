@@ -109,6 +109,18 @@
           <label for="transaction">newbalanceOrig</label>
         </div>
       </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <i class="material-icons prefix">add_circle</i>
+          <input disabled v-model="post.hash" type="text">
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <i class="material-icons prefix">add_circle</i>
+          <input disabled v-model="post.nonce" type="number">
+        </div>
+      </div>
       <button class="btn waves-effect waves-light" type="submit" name="enviar">Subir
         <i class="material-icons right">open_in_browser</i>
       </button>
@@ -151,7 +163,8 @@ export default {
         newbalanceDest: 0
       },
 
-      transactions: []
+      transactions: [],
+      post: []
     };
   },
 
@@ -174,7 +187,8 @@ export default {
     AgregarBlock() {
       this.transactions.push(this.transaction);
       Services.postBlock({"transactions" : this.transactions}).then((response) => {
-        console.log(response);
+        this.post = response.data.newBlock;
+        console.log(response.data.newBlock)
       });
     }
   }

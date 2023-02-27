@@ -7,17 +7,13 @@
       <center>
         <div class="card sticky-action large" v-for="block in blocks" :key="blocks">
           <div class="card-image waves-effect waves-block waves-light">
-            <img class="activator" src="https://i.imgur.com/oXZ9FeNh.png">
+            <img class="activator" src="https://www.rentafija.com/wp-content/uploads/2022/02/como-funciona-el-blockchain-1.jpg">
           </div>
           <div class="card-content">
             <span class="card-title activator grey-text text-darken-4">HASH: {{ block.hash }}<i class="material-icons right">more_vert</i></span>
           </div>
           <div class="card-action">
-            <a v-on:click="Click(block.index)">Transacciones</a>
-            <button class="btn waves-effect waves-light" v-on:click="Click(block.index)">Transacciones
-              <i class="material-icons right">send</i>
-              <router-link to="/transactions"></router-link>
-            </button>
+            <p><a href="/transactions" v-on:click="Click(block.index)">Transactions</a></p>
           </div>
           <div class="card-reveal">
             <span class="card-title grey-text text-darken-4">HASH: {{ block.hash }}<i class="material-icons right">close</i></span>

@@ -18,6 +18,8 @@ public:
 
     block(size_t index, dynamic_array<T> transactions, std::size_t *prevHash);
 
+    block(size_t index, typename dynamic_array<T>::iterator begin, typename dynamic_array<T>::iterator end, std::size_t *prevHash);
+
     block(block &&other) noexcept;
 
     block(const block &other);
@@ -62,6 +64,12 @@ private:
     std::size_t *prevHash = new size_t(0);
     block *next = nullptr;
 };
+template<typename T>
+block<T>::block(size_t index, typename dynamic_array<T>::iterator begin, typename dynamic_array<T>::iterator end, std::size_t *prevHash)
+    : index(index), transactions(begin, end), timestamp(std::time(nullptr)), prevHash(prevHash) {
+
+    hash = calculateHash();
+}
 
 template<typename T>
 std::string block<T>::serializeTransactions() const {

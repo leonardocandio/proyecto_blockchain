@@ -12,7 +12,6 @@
 #include <map>
 #include <stack>
 #include <vector>
-using namespace std;
 
 const unsigned ALPHA_SIZE = 26;
 template<class DataT>
@@ -20,8 +19,8 @@ class TriePatricia : public Trie<DataT> {
 private:
     struct TrieNode {
         TrieNode **children;
-        string prefix;
-        dynamic_array<DataT> endWord; //array para almacenar punteros a transactions
+        std::string prefix;
+        dynamic_array<DataT> endWord;//array para almacenar punteros a transactions
 
         TrieNode() {
             children = new TrieNode *[ALPHA_SIZE];
@@ -29,6 +28,24 @@ private:
                 children[i] = nullptr;
             }
             endWord = dynamic_array<DataT>();
+        }
+        TrieNode(const TrieNode &other) {
+            children = new TrieNode *[ALPHA_SIZE];
+            for (int i = 0; i < ALPHA_SIZE; i++) {
+                children[i] = other.children[i];
+            }
+            prefix = other.prefix;
+            endWord = other.endWord;
+        }
+        TrieNode &operator=(const TrieNode &other) {
+            if (this != &other) {
+                for (int i = 0; i < ALPHA_SIZE; i++) {
+                    children[i] = other.children[i];
+                }
+                prefix = other.prefix;
+                endWord = other.endWord;
+            }
+            return *this;
         }
 
         ~TrieNode() {
@@ -40,12 +57,24 @@ private:
         }
     };
 
-    TrieNode *root;
+    TrieNode *root = new TrieNode();
 
 public:
-    TriePatricia() : root(new TrieNode()) {}
+    TriePatricia() = default;
+    ~TriePatricia() override {
+        delete root;
+    }
+    TriePatricia(const TriePatricia &) : root(new TrieNode) {
+    }
+    TriePatricia &operator=(const TriePatricia &other) {
+        if (this != &other) {
+            delete root;
+            root = new TrieNode(*other.root);
+        }
+        return *this;
+    }
 
-    void insert(string key, DataT coming) {
+    void insert(std::string key, DataT coming) {
         if (root == nullptr) {
             root = new TrieNode;
         }
@@ -61,16 +90,16 @@ public:
                 current = child;
                 break;
             } else {
-                string childPrefix = child->prefix;// childprefix = romano
+                std::string childPrefix = child->prefix;// childprefix = romano
                 int j = 0;
                 while (i < key.length() && j < childPrefix.length() && key[i] == childPrefix[j]) {
                     i++;// r o m a n o   r o s a r i o ---  r a t a
                     j++;// r o m a       r o m a       ---  r o
                 }
                 if (j == childPrefix.length()) {
-                    current = child;// Si tiene caracteres en comun con todo el prefijo de su hijo, current se mueve al hijo
+                    current = child;// Si tiene caracteres en comun con toodo el prefijo de su hijo, current se mueve al hijo
                 } else {
-                    TrieNode *newChild = new TrieNode();
+                    auto *newChild = new TrieNode();
                     newChild->prefix = childPrefix.substr(j);
                     newChild->endWord = child->endWord;
                     for (int k = 0; k < ALPHA_SIZE; k++) {
@@ -78,10 +107,9 @@ public:
                         child->children[k] = nullptr;
                     }
                     child->prefix = childPrefix.substr(0, j);
-                    //child->endWord = false;
                     child->children[newChild->prefix[0] - 'a'] = newChild;
                     if (i < key.length()) {
-                        TrieNode *newChild2 = new TrieNode();
+                        auto *newChild2 = new TrieNode();
                         newChild2->prefix = key.substr(i);
                         child->children[newChild2->prefix[0] - 'a'] = newChild2;
                         current = newChild2;
@@ -95,7 +123,7 @@ public:
         current->endWord.push_back(coming);
     }
 
-    bool search(string key) {
+    bool search(std::string key) override {
         TrieNode *current = root;
         int i = 0;
         while (i < key.length()) {
@@ -104,7 +132,7 @@ public:
             if (child == nullptr) {
                 return false;
             } else {
-                string childPrefix = child->prefix;
+                std::string childPrefix = child->prefix;
                 int j = 0;
                 while (i < key.length() && j < childPrefix.length() && key[i] == childPrefix[j]) {
                     i++;
@@ -119,7 +147,7 @@ public:
         }
         return (current->endWord.size() > 0);
     }
-    void remove(string key) {
+    void remove(std::string key) override {
         if (!search(key)) {
             return;
         }
@@ -134,7 +162,7 @@ public:
             if (child == nullptr) {
                 return;
             } else {
-                string childPrefix = child->prefix;
+                std::string childPrefix = child->prefix;
                 int j = 0;
                 while (i < key.length() && j < childPrefix.length() && key[i] == childPrefix[j]) {
                     i++;
@@ -153,7 +181,7 @@ public:
                     current = child;
                     charToDelete = c;
                 } else {
-                    TrieNode *newChild = new TrieNode();
+                    auto *newChild = new TrieNode();
                     newChild->prefix = childPrefix.substr(j);
                     newChild->endWord = child->endWord;
                     for (int k = 0; k < ALPHA_SIZE; k++) {
@@ -176,21 +204,9 @@ public:
             parent->children[charToDelete - 'a'] = nullptr;
         }
     }
-    string toString(string sep = ",") {
-        vector<string> words;
-        getWords(root, "", words);
-        string result = "";
-        for (int i = 0; i < words.size(); i++) {
-            result += words[i];
-            if (i < words.size() - 1) {
-                result += sep;
-            }
-        }
-        return result + " ";
-    }
 
 private:
-    void getWords(TrieNode *node, string prefix, vector<string> &words) {
+    void getWords(TrieNode *node, std::string const &prefix, dynamic_array<std::string> &words) {
         if (node == nullptr) {
             return;
         }
@@ -201,7 +217,7 @@ private:
             getWords(node->children[i], prefix + node->prefix, words);
         }
     }
-    bool isLeaf(TrieNode *node) {
+    bool isLeaf(TrieNode *node) const {
         for (int i = 0; i < ALPHA_SIZE; i++) {
             if (node->children[i] != nullptr) {
                 return false;

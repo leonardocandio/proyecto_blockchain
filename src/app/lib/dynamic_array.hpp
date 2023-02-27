@@ -14,12 +14,30 @@
 template<class T>
 class dynamic_array {
 public:
+    using iterator = dynamic_array_iterator<T>;
+    using const_iterator = dynamic_array_iterator<const T>;
+
+    virtual iterator begin() { return iterator(&array[0]); }
+
+    virtual const_iterator begin() const { return const_iterator(&array[0]); }
+
+    virtual iterator end() { return iterator(&array[_size]); }
+
+    virtual const_iterator end() const { return const_iterator(&array[_size]); }
+
     dynamic_array() = default;
 
     dynamic_array(const dynamic_array &other) : _size(other._size), _capacity(other._capacity) {
         array = new T[_capacity];
         for (size_t i = 0; i < _size; ++i) {
             array[i] = other.array[i];
+        }
+    }
+    dynamic_array(iterator begin, iterator end) : _size(end - begin), _capacity(end - begin) {
+        array = new T[_capacity];
+        for (size_t i = 0; i < _size; ++i) {
+            array[i] = *begin;
+            ++begin;
         }
     }
 
@@ -57,14 +75,14 @@ public:
 
     virtual void push_back(const T &value) {
         if (_size == _capacity) {
-            reserve(_capacity * (3 / 2) + 1);
+            reserve((float) _capacity * (3. / 2.) + 1);
         }
         array[_size++] = value;
     }
 
     void push_back(T &&value) {
         if (_size == _capacity) {
-            reserve(_capacity * (3 / 2) + 1);
+            reserve((float) _capacity * (3. / 2.) + 1);
         }
         array[_size++] = std::move(value);
     }
@@ -72,7 +90,7 @@ public:
     template<class... Args>
     void emplace_back(Args &&...args) {
         if (_size == _capacity) {
-            reserve(_capacity * (3 / 2) + 1);
+            reserve((float) _capacity * (3. / 2.) + 1);
         }
         array[_size++] = T(std::forward<Args>(args)...);
     }
@@ -142,16 +160,6 @@ public:
         return _capacity;
     }
 
-    using iterator = dynamic_array_iterator<T>;
-    using const_iterator = dynamic_array_iterator<const T>;
-
-    virtual iterator begin() { return iterator(&array[0]); }
-
-    virtual const_iterator begin() const { return const_iterator(&array[0]); }
-
-    virtual iterator end() { return iterator(&array[_size]); }
-
-    virtual const_iterator end() const { return const_iterator(&array[_size]); }
 
 protected:
     void increment_size() {

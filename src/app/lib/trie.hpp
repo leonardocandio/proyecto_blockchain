@@ -6,16 +6,13 @@
 #define PROYECTO_BLOCKCHAIN_TRIE_HPP
 #include <string>
 
-using namespace std;
 template<class DataT>
-class Trie{
+class Trie {
 public:
-
-    virtual void insert(string key, DataT coming) = 0;
-    virtual bool search(string key) = 0;
-    virtual void remove(string key) = 0;
-    //imprime ordenado
-    virtual string toString(string sep = ",") = 0;
+    virtual void insert(std::string key, DataT coming) = 0;
+    virtual bool search(std::string key) = 0;
+    virtual void remove(std::string key) = 0;
+    virtual ~Trie() = default;
 };
 
 #endif

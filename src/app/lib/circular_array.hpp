@@ -63,7 +63,7 @@ public:
 
     void push_front(const T &value) {
         if (this->size() == this->capacity()) {
-            this->reserve(this->capacity() * (3 / 2) + 1);
+            this->reserve(((float) this->capacity()) * (3. / 2.) + 1);
         }
         for (int i = this->size(); i > 0; --i) {
             this->operator[](i) = this->operator[](i - 1);
@@ -75,7 +75,7 @@ public:
     template<typename... Args>
     void emplace_back(Args &&...args) {
         if (this->size() == this->capacity) {
-            this->reserve(this->capacity() * (3 / 2) + 1);
+            this->reserve(((float) this->capacity()) * (3. / 2.) + 1);
         }
         operator[](this->size()) = T(std::forward<Args>(args)...);
         this->increment_size();
@@ -84,7 +84,7 @@ public:
     template<typename... Args>
     void emplace_front(Args &&...args) {
         if (this->size() == this->capacity) {
-            this->reserve(this->capacity() * (3 / 2) + 1);
+            this->reserve(((float) this->capacity()) * (3. / 2.) + 1);
         }
         for (int i = this->size(); i > 0; --i) {
             this->operator[](i) = this->operator[](i - 1);

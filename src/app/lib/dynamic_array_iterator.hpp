@@ -24,7 +24,7 @@ public:
         return *this;
     }
 
-    virtual dynamic_array_iterator operator++(int) {
+    virtual const dynamic_array_iterator operator++(int) {
         dynamic_array_iterator old = *this;
         ++(*this);
         return old;
@@ -35,7 +35,7 @@ public:
         return *this;
     }
 
-    dynamic_array_iterator operator--(int) {
+    const dynamic_array_iterator operator--(int) {
         dynamic_array_iterator old = *this;
         --(*this);
         return old;
@@ -50,6 +50,17 @@ public:
         current -= n;
         return *this;
     }
+
+    virtual long operator-(dynamic_array_iterator &rhs) {
+        return current - rhs.current;
+    }
+
+    virtual dynamic_array_iterator &operator+=(int n) {
+        current += n;
+        return *this;
+    }
+    bool operator<(const dynamic_array_iterator &rhs) const { return current < rhs.current; }
+    bool operator>(const dynamic_array_iterator &rhs) const { return current > rhs.current; }
 
 
     bool operator==(const dynamic_array_iterator &rhs) const { return current == rhs.current; }

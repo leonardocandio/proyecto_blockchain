@@ -14,7 +14,7 @@
 #include <vector>
 using namespace std;
 
-const unsigned ALPHA_SIZE = 26;
+const unsigned ALPHA_SIZE = 256;
 template<class DataT>
 class TriePatricia : public Trie<DataT> {
 private:
@@ -53,11 +53,11 @@ public:
         int i = 0;
         while (i < key.length()) {
             char c = key[i];
-            TrieNode *child = current->children[c - 'a'];
+            TrieNode *child = current->children[c];
             if (child == nullptr) {
                 child = new TrieNode();
                 child->prefix = key.substr(i);
-                current->children[c - 'a'] = child;
+                current->children[c] = child;
                 current = child;
                 break;
             } else {
@@ -79,11 +79,11 @@ public:
                     }
                     child->prefix = childPrefix.substr(0, j);
                     //child->endWord = false;
-                    child->children[newChild->prefix[0] - 'a'] = newChild;
+                    child->children[newChild->prefix[0]] = newChild;
                     if (i < key.length()) {
                         TrieNode *newChild2 = new TrieNode();
                         newChild2->prefix = key.substr(i);
-                        child->children[newChild2->prefix[0] - 'a'] = newChild2;
+                        child->children[newChild2->prefix[0]] = newChild2;
                         current = newChild2;
                         break;
                     }
@@ -100,7 +100,7 @@ public:
         int i = 0;
         while (i < key.length()) {
             char c = key[i];
-            TrieNode *child = current->children[c - 'a'];
+            TrieNode *child = current->children[c];
             if (child == nullptr) {
                 return false;
             } else {
@@ -130,7 +130,7 @@ public:
         int i = 0;
         while (i < key.length()) {
             char c = key[i];
-            TrieNode *child = current->children[c - 'a'];
+            TrieNode *child = current->children[c];
             if (child == nullptr) {
                 return;
             } else {
@@ -144,7 +144,7 @@ public:
                     child->endWord.clear();
                     if (isLeaf(child)) {
                         delete child;
-                        current->children[c - 'a'] = nullptr;
+                        current->children[c] = nullptr;
                     }
                     return;
                 }
@@ -162,7 +162,7 @@ public:
                     }
                     child->prefix = childPrefix.substr(0, j);
                     child->endWord.clear();
-                    child->children[newChild->prefix[0] - 'a'] = newChild;
+                    child->children[newChild->prefix[0]] = newChild;
                     parent = current;
                     current = child;
                     charToDelete = newChild->prefix[0];
@@ -173,7 +173,7 @@ public:
         current->endWord.clear();
         if (isLeaf(current)) {
             delete current;
-            parent->children[charToDelete - 'a'] = nullptr;
+            parent->children[charToDelete] = nullptr;
         }
     }
     string toString(string sep = ",") {

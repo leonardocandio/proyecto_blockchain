@@ -141,6 +141,20 @@ blockchain::searchType blockchain::resolveSearchType(std::string_view const &key
     }
 }
 void blockchain::transactionsToBlocks(size_t transactionsPerBlock) {
+    auto start = transactions.begin();
+    auto finish = start + (int) transactionsPerBlock;
+    while (start != transactions.end()) {
+        lastBlock->next = new block<transaction *>(lastBlock->getIndex() + 1,
+                                                   start, finish, &lastBlock->hash);
+        lastBlock = lastBlock->next;
+        lastBlock->mineBlock(difficulty);
+        _size++;
+        start = finish;
+        finish = start + (int) transactionsPerBlock;
+        if (finish > transactions.end()) {
+            finish = transactions.end();
+        }
+    }
 }
 void blockchain::indexNewData(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end) {
     for (auto it = begin; it != end; it++) {

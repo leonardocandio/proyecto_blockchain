@@ -6,19 +6,19 @@
 #define PROYECTO_BLOCKCHAIN_BLOCK_HPP
 
 #include "algorithm"
+#include "crow/TinySHA1.hpp"
 #include "ctime"
 #include "lib/dynamic_array.hpp"
 #include "sstream"
-
 //class block
 template<typename T>
 class block {
 public:
     block();
 
-    block(size_t index, dynamic_array<T> transactions, std::size_t *prevHash);
+    block(size_t index, dynamic_array<T> transactions, std::string *prevHash);
 
-    block(size_t index, typename dynamic_array<T>::iterator begin, typename dynamic_array<T>::iterator end, std::size_t *prevHash);
+    block(size_t index, typename dynamic_array<T>::iterator begin, typename dynamic_array<T>::iterator end, std::string *prevHash);
 
     block(block &&other) noexcept;
 
@@ -28,13 +28,13 @@ public:
 
     void mineBlock(unsigned short difficulty);
 
-    [[nodiscard]] const std::size_t &getHash() const;
+    [[nodiscard]] const std::string &getHash() const;
 
-    [[nodiscard]] std::size_t calculateHash() const;
+    [[nodiscard]] std::string calculateHash() const;
 
-    [[nodiscard]] const std::size_t &getPrevHash() const;
+    [[nodiscard]] const std::string &getPrevHash() const;
 
-    void setPrevHash(const std::size_t &prevH);
+    void setPrevHash(const std::string &prevH);
 
     [[nodiscard]] const dynamic_array<T> &getTransactions() const;
 
@@ -57,16 +57,18 @@ private:
     [[nodiscard]] std::string jsonifyTransactions() const;
 
     size_t index = 0;
+    typename dynamic_array<T>::iterator transactionsBegin;
+    typename dynamic_array<T>::iterator transactionsEnd;
     dynamic_array<T> transactions;
     std::time_t timestamp = 0;
-    std::size_t hash = 0;
+    std::string hash;
     size_t nonce = -1;
-    std::size_t *prevHash = new size_t(0);
+    std::string *prevHash = nullptr;
     block *next = nullptr;
 };
 template<typename T>
-block<T>::block(size_t index, typename dynamic_array<T>::iterator begin, typename dynamic_array<T>::iterator end, std::size_t *prevHash)
-    : index(index), transactions(begin, end), timestamp(std::time(nullptr)), prevHash(prevHash) {
+block<T>::block(size_t index, typename dynamic_array<T>::iterator begin, typename dynamic_array<T>::iterator end, std::string *prevHash)
+    : index(index), transactionsBegin(begin), transactionsEnd(end), timestamp(std::time(nullptr)), prevHash(prevHash) {
 
     hash = calculateHash();
 }
@@ -74,8 +76,8 @@ block<T>::block(size_t index, typename dynamic_array<T>::iterator begin, typenam
 template<typename T>
 std::string block<T>::serializeTransactions() const {
     std::stringstream ss;
-    for (auto &transaction: transactions) {
-        ss << transaction->serialize();
+    for (dynamic_array_iterator<T> it = transactionsBegin; it != transactionsEnd; ++it) {
+        ss << (*it)->serialize() << ";";
     }
     return ss.str();
 }
@@ -84,9 +86,9 @@ template<typename T>
 std::string block<T>::jsonifyTransactions() const {
     std::stringstream ss;
     ss << "[";
-    for (auto &transaction: transactions) {
-        ss << transaction->jsonify();
-        if (transaction != transactions[transactions.size() - 1]) {
+    for (dynamic_array_iterator<T> it = transactionsBegin; it != transactionsEnd; ++it) {
+        ss << (*it)->jsonify();
+        if (it + 1 != transactionsEnd) {
             ss << ",";
         }
     }
@@ -95,7 +97,7 @@ std::string block<T>::jsonifyTransactions() const {
 }
 
 template<typename T>
-block<T>::block() = default;
+block<T>::block() : prevHash(new std::string(40, '0')){};
 
 template<typename T>
 block<T>::~block() = default;
@@ -103,27 +105,32 @@ block<T>::~block() = default;
 template<typename T>
 void block<T>::mineBlock(unsigned short difficulty) {
     std::string target(difficulty, '0');
-    do {
+    while (hash.substr(0, difficulty) != target) {
         nonce++;
         hash = calculateHash();
-    } while (std::to_string(hash).substr(std::to_string(hash).size() - difficulty) != target);
+    }
 }
 
 template<typename T>
-std::size_t block<T>::calculateHash() const {
+std::string block<T>::calculateHash() const {
     std::stringstream ss;
-    std::hash<std::string> newHash;
     ss << index << timestamp << serializeTransactions() << nonce << *prevHash;
-    return newHash(ss.str());
+    sha1::SHA1 sha1;
+    sha1.processBytes(ss.str().c_str(), ss.str().size());
+    uint32_t digest[5];
+    sha1.getDigest(digest);
+    char tmp[45];
+    snprintf(tmp, 41, "%08x%08x%08x%08x%08x", digest[0], digest[1], digest[2], digest[3], digest[4]);
+    return {tmp, 40};
 }
 
 template<typename T>
-const std::size_t &block<T>::getPrevHash() const {
+const std::string &block<T>::getPrevHash() const {
     return *prevHash;
 }
 
 template<typename T>
-void block<T>::setPrevHash(const std::size_t &prevH) {
+void block<T>::setPrevHash(const std::string &prevH) {
     *block<T>::prevHash = prevH;
 }
 
@@ -138,7 +145,7 @@ const size_t &block<T>::getIndex() const {
 }
 
 template<typename T>
-block<T>::block(size_t index, dynamic_array<T> transactions, std::size_t *prevHash) : index(index),
+block<T>::block(size_t index, dynamic_array<T> transactions, std::string *prevHash) : index(index),
                                                                                       transactions(std::move(transactions)),
                                                                                       prevHash(prevHash) {
     timestamp = std::time(nullptr);
@@ -147,14 +154,15 @@ block<T>::block(size_t index, dynamic_array<T> transactions, std::size_t *prevHa
 
 
 template<typename T>
-const std::size_t &block<T>::getHash() const {
+const std::string &block<T>::getHash() const {
     return hash;
 }
 
 template<typename T>
 block<T>::block(block &&other) noexcept : index(other.index), transactions(std::move(other.transactions)),
                                           timestamp(other.timestamp), hash(other.hash), nonce(other.nonce),
-                                          prevHash(other.prevHash), next(other.next) {
+                                          prevHash(other.prevHash), next(other.next), transactionsBegin(other.transactionsBegin),
+                                          transactionsEnd(other.transactionsEnd) {
     other.prevHash = nullptr;
 }
 
@@ -166,7 +174,8 @@ bool block<T>::isValid() const {
 template<typename T>
 block<T>::block(const block &other) : index(other.index), transactions(other.transactions),
                                       timestamp(other.timestamp), hash(other.hash), nonce(other.nonce),
-                                      prevHash(new std::size_t(*other.prevHash)), next(other.next) {
+                                      prevHash(other.prevHash), next(other.next), transactionsBegin(other.transactionsBegin),
+                                      transactionsEnd(other.transactionsEnd) {
 }
 
 template<typename T>
@@ -174,10 +183,12 @@ block<T> &block<T>::operator=(const block &other) {
     if (this == &other) return *this;
     index = other.index;
     transactions = other.transactions;
+    transactionsEnd = other.transactionsEnd;
+    transactionsBegin = other.transactionsBegin;
     timestamp = other.timestamp;
     hash = other.hash;
     nonce = other.nonce;
-    prevHash = new std::size_t(*other.prevHash);
+    prevHash = other.prevHash;
     return *this;
 }
 

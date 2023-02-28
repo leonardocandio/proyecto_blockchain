@@ -6,71 +6,65 @@
 #define PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_ITERATOR_HPP
 
 #include "dynamic_array.hpp"
+#include "iterator"
 
 //iterator for dynamic array
 template<class T>
-class dynamic_array_iterator {
+struct dynamic_array_iterator {
 public:
-    dynamic_array_iterator() : current(nullptr) {}
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = T;
+    using difference_type = std::ptrdiff_t;
+    using pointer = T *;
+    using reference = T &;
 
-    explicit dynamic_array_iterator(T *p) : current(p) {}
-
-    T &operator*() const { return retrieve(); }
-
-    T *operator->() { return &retrieve(); }
-
-    virtual dynamic_array_iterator &operator++() {
-        ++current;
+    explicit dynamic_array_iterator(pointer ptr) : ptr(ptr) {}
+    dynamic_array_iterator() = default;
+    reference operator*() const { return *ptr; }
+    pointer operator->() const { return ptr; }
+    dynamic_array_iterator &operator++() {
+        ++ptr;
         return *this;
     }
-
-    virtual const dynamic_array_iterator operator++(int) {
-        dynamic_array_iterator old = *this;
-        ++(*this);
-        return old;
+    const dynamic_array_iterator operator++(int) {
+        dynamic_array_iterator tmp(*this);
+        operator++();
+        return tmp;
     }
-
-    virtual dynamic_array_iterator &operator--() {
-        --current;
+    dynamic_array_iterator &operator--() {
+        --ptr;
         return *this;
     }
-
     const dynamic_array_iterator operator--(int) {
-        dynamic_array_iterator old = *this;
-        --(*this);
-        return old;
+        dynamic_array_iterator tmp(*this);
+        operator--();
+        return tmp;
     }
-
-    virtual dynamic_array_iterator &operator+(int n) {
-        current += n;
+    dynamic_array_iterator &operator+=(difference_type n) {
+        ptr += n;
         return *this;
     }
-
-    virtual dynamic_array_iterator &operator-(int n) {
-        current -= n;
+    dynamic_array_iterator &operator-=(difference_type n) {
+        ptr -= n;
         return *this;
     }
-
-    virtual long operator-(dynamic_array_iterator &rhs) {
-        return current - rhs.current;
+    dynamic_array_iterator operator+(difference_type n) const {
+        dynamic_array_iterator tmp(*this);
+        return tmp += n;
     }
-
-    virtual dynamic_array_iterator &operator+=(int n) {
-        current += n;
-        return *this;
+    dynamic_array_iterator operator-(difference_type n) const {
+        dynamic_array_iterator tmp(*this);
+        return tmp -= n;
     }
-    bool operator<(const dynamic_array_iterator &rhs) const { return current < rhs.current; }
-    bool operator>(const dynamic_array_iterator &rhs) const { return current > rhs.current; }
+    difference_type operator-(const dynamic_array_iterator &other) const { return ptr - other.ptr; }
+    friend bool operator==(const dynamic_array_iterator &lhs, const dynamic_array_iterator &rhs) { return lhs.ptr == rhs.ptr; }
+    friend bool operator!=(const dynamic_array_iterator &lhs, const dynamic_array_iterator &rhs) { return lhs.ptr != rhs.ptr; }
+    friend bool operator<(const dynamic_array_iterator &lhs, const dynamic_array_iterator &rhs) { return lhs.ptr < rhs.ptr; }
+    friend bool operator>(const dynamic_array_iterator &lhs, const dynamic_array_iterator &rhs) { return lhs.ptr > rhs.ptr; }
 
-
-    bool operator==(const dynamic_array_iterator &rhs) const { return current == rhs.current; }
-
-    bool operator!=(const dynamic_array_iterator &rhs) const { return current != rhs.current; }
 
 private:
-    T *current;
-
-    T &retrieve() const { return *current; }
+    pointer ptr;
 };
 
 #endif//PROYECTO_BLOCKCHAIN_DYNAMIC_ARRAY_ITERATOR_HPP

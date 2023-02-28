@@ -15,7 +15,7 @@
 
 class blockchain {
 public:
-    explicit blockchain(size_t _size = 0, unsigned short difficulty = 2);
+    explicit blockchain(size_t _size = 0, unsigned short difficulty = 3);
 
     void addBlock(const dynamic_array<transaction *> &newT);
 

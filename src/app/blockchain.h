@@ -7,17 +7,19 @@
 
 #include "../app/lib/dynamic_array.hpp"
 #include "../app/lib/heap.hpp"
+#include "../app/lib/patriciatrie.hpp"
 #include "block.hpp"
 #include "fstream"
 #include "lib/circular_array.hpp"
 #include "transaction.h"
-#include "../app/lib/patriciatrie.hpp"
 
 class blockchain {
 public:
-    blockchain(size_t _size = 0, unsigned short difficulty = 2);
+    explicit blockchain(size_t _size = 0, unsigned short difficulty = 2);
 
     void addBlock(const dynamic_array<transaction *> &newT);
+
+    void addBlock(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end);
 
     [[nodiscard]] bool isChainValid() const;
 
@@ -30,13 +32,15 @@ public:
     block<transaction *> *getLastBlock();
 
 
-    dynamic_array<transaction *> getTransactionsByKey(std::string key, size_t limit);
+    dynamic_array<transaction *> getTransactionsByKey(const std::string &key, size_t limit);
 
     [[nodiscard]] size_t getSize() const;
 
 
 private:
     void indexNewData(const dynamic_array<transaction *> &newT);
+    void indexNewData(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end);
+    void transactionsToBlocks(size_t transactionPerBlock);
 
     size_t _size;
     short unsigned int difficulty;
@@ -48,7 +52,7 @@ private:
     heap<double, transaction *> minHeap;
     TriePatricia<transaction> patriciatrie;
 
-    circular_array<transaction *> transactions;
+    dynamic_array<transaction *> transactions;
 
     enum searchType {
         MAX,

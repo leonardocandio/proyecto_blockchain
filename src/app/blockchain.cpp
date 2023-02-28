@@ -29,32 +29,28 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine, size_t
 
     std::fstream file(path, std::ios::in);
     dynamic_array<transaction *> newTransactions;
-    if (file.is_open()) {
-        std::string line;
-        if (skipFirstLine) std::getline(file, line);
-        while (std::getline(file, line)) {
-            if (line.empty()) {
-                continue;
-            }
-            std::stringstream ss(line);
-            std::string item;
-            dynamic_array<std::string> lineV;
-            while (std::getline(ss, item, ',')) {
-                lineV.push_back(item);
-            }
-            newTransactions.push_back(
-                    new transaction(std::stoi(lineV[0]), lineV[1], std::stod(lineV[2]), lineV[3], std::stod(lineV[4]),
-                                    std::stod(lineV[5]), lineV[6], std::stod(lineV[7]), std::stod(lineV[8])));
 
-            if (newTransactions.size() == transactionPerBlock) {
-                addBlock(newTransactions);
-                newTransactions.clear();
-            }
+    if (!file.is_open()) return;
+
+    std::string line;
+    if (skipFirstLine) std::getline(file, line);
+    while (std::getline(file, line)) {
+        if (line.empty()) {
+            continue;
         }
-        if (newTransactions.size() > 0) {
-            addBlock(newTransactions);
+        std::stringstream ss(line);
+        std::string item;
+        dynamic_array<std::string> lineV;
+        while (std::getline(ss, item, ',')) {
+            lineV.push_back(item);
         }
+        transactions.push_back(
+                new transaction((unsigned short) std::stoi(lineV[0]), lineV[1], std::stod(lineV[2]), lineV[3], std::stod(lineV[4]),
+                                std::stod(lineV[5]), lineV[6], std::stod(lineV[7]), std::stod(lineV[8])));
+        maxHeap.push(std::make_pair(transactions.back()->getAmount(), transactions.back()));
+        minHeap.push(std::make_pair(transactions.back()->getAmount(), transactions.back()));
     }
+    transactionsToBlocks(transactionPerBlock);
 }
 
 
@@ -83,6 +79,16 @@ void blockchain::addBlock(const dynamic_array<transaction *> &newTransactions) {
     _size++;
 }
 
+void blockchain::addBlock(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end) {
+    indexNewData(begin, end);
+    lastBlock->next = new block<transaction *>(lastBlock->getIndex() + 1,
+                                               begin, end, &lastBlock->hash);
+    lastBlock = lastBlock->next;
+    lastBlock->mineBlock(difficulty);
+    _size++;
+}
+
+
 block<transaction *> *blockchain::getLastBlock() { return lastBlock; }
 
 void blockchain::indexNewData(const dynamic_array<transaction *> &newT) {
@@ -99,10 +105,10 @@ void blockchain::indexNewData(const dynamic_array<transaction *> &newT) {
 
 size_t blockchain::getSize() const { return _size; }
 
-dynamic_array<transaction *> blockchain::getTransactionsByKey(std::string key,
+dynamic_array<transaction *> blockchain::getTransactionsByKey(const std::string &key,
                                                               size_t limit) {
     dynamic_array<transaction *> result;
-    switch (resolveSearchType(std::move(key))) {
+    switch (resolveSearchType(key)) {
         case MAX: {
             auto temp = maxHeap;
             for (size_t i = 0; i < limit; i++) {
@@ -132,5 +138,18 @@ blockchain::searchType blockchain::resolveSearchType(std::string_view const &key
         return MIN;
     } else {
         throw std::invalid_argument("Invalid search type");
+    }
+}
+void blockchain::transactionsToBlocks(size_t transactionsPerBlock) {
+}
+void blockchain::indexNewData(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end) {
+    for (auto it = begin; it != end; it++) {
+        transactions.push_back(*it);
+    }
+
+    for (auto it = begin; it != end; it++) {
+        maxHeap.push(std::make_pair((*it)->getAmount(), *it));
+        minHeap.push(std::make_pair((*it)->getAmount(), *it));
+        //patriciatrie.insert((*it)->getNameDest(), **it);
     }
 }

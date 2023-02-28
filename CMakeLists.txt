@@ -13,9 +13,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} ${GCC_SANI
 find_package(Crow CONFIG REQUIRED)
 
 add_executable(proyecto_blockchain
-        src/main.cpp
-        src/app/block.hpp
-        src/app/blockchain.cpp src/app/transaction.cpp src/app/transaction.h src/app/lib/dynamic_array.hpp src/app/lib/dynamic_array_iterator.hpp src/app/lib/heap.hpp src/app/lib/circular_array.hpp src/app/lib/patriciatrie.hpp src/app/lib/btree.h)
+        src/main.cpp src/app/block.hpp src/app/blockchain.cpp
+        src/app/transaction.cpp src/app/transaction.h src/app/lib/dynamic_array.hpp
+        src/app/lib/dynamic_array_iterator.hpp src/app/lib/heap.hpp src/app/lib/circular_array.hpp
+        src/app/lib/patriciatrie.hpp src/app/lib/trie.hpp)
 
 if (MINGW)
     find_library(WSOCK32_LIBRARY wsock32)

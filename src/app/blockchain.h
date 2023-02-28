@@ -50,7 +50,7 @@ private:
 
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
-    //TriePatricia<transaction> patriciatrie;
+    TriePatricia<transaction> patriciatrie;
 
     dynamic_array<transaction *> transactions;
 

@@ -76,6 +76,8 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine, size_t
 
         patricia.insert(lineV[6], transactions.back());
         hashMap.set(transactions.back()->getuniq(), transactions.back());
+
+        bTreeAmount.insert(transactions.back()->getAmount(), transactions.back());
     }
     transactionsToBlocks(transactionPerBlock);
 }
@@ -328,6 +330,7 @@ void blockchain::indexNewData(const dynamic_array_iterator<transaction *> &begin
         minHeapOldbalanceDest.push(std::make_pair((*it)->getOldbalanceDest(), *it));
         maxHeapNewbalanceDest.push(std::make_pair((*it)->getNewbalanceDest(), *it));
         minHeapNewbalanceDest.push(std::make_pair((*it)->getNewbalanceDest(), *it));
+
 
         patricia.insert((*it)->getNameDest(), *it);
         hashMap.set((*it)->getuniq(), (*it));

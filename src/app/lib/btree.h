@@ -19,7 +19,7 @@ using namespace std;
 template<typename TK, typename coming>
 struct Node {
     // array de keys
-    pair<TK,coming> *keys;
+    pair<TK, coming> *keys;
     // array de punteros a hijos
     Node **children;
     // cantidad de keys
@@ -30,7 +30,7 @@ struct Node {
     Node() : keys(nullptr), children(nullptr), count(0), leaf(true) {}
     Node(int M, bool _leaf = true) {
         this->keys = new TK[M - 1];
-        this->children = new Node<TK,coming> *[M];
+        this->children = new Node<TK, coming> *[M];
         for (int i = 0; i < M; i++) {
             this->children[i] = nullptr;
         }
@@ -47,12 +47,12 @@ struct Node {
                 this->keys[i + 1] = this->keys[i];
             }
         }
-        this->keys[i + 1] = pair(value,pointer);
+        this->keys[i + 1] = pair(value, pointer);
         (this->count)++;
         return i + 1;
     }
 
-    int insert(Node<TK,coming> *node, int M, Node<TK,coming> *cmp) {
+    int insert(Node<TK, coming> *node, int M, Node<TK, coming> *cmp) {
         int i = M - 1;
         for (; i >= 0; i--) {
             if (children[i] == cmp) {
@@ -156,7 +156,7 @@ public:
     BTree(int _M) : root(nullptr), M(_M), n(0) {}
 
     bool search(TK key) { return search(this->root, key); };                 //indica si se encuentra o no un elemento
-    void insert(TK key, coming pointer);                                                     //inserta un elemento
+    void insert(TK key, coming pointer);                                     //inserta un elemento
     void remove(TK key);                                                     //elimina un elemento
     int height() { return height(this->root); };                             //altura del arbol. Considerar altura -1 para arbol vacio
     string toString(const string &sep) { return toString(this->root, sep); };// recorrido inorder
@@ -198,9 +198,9 @@ private:
     bool search(Node<TK, coming> *&node, TK key);
 
     SplitResult<TK, coming> *insert(Node<TK, coming> *&node, TK key, coming pointer);
-    void relocate(Node<TK, coming> *&node, TK key,coming pointer, Node<TK, coming> *key_right_tree = nullptr);
+    void relocate(Node<TK, coming> *&node, TK key, coming pointer, Node<TK, coming> *key_right_tree = nullptr);
     Node<TK, coming> *generate_right_node(Node<TK, coming> *&node, int from);
-    SplitResult<TK, coming> *split_par(Node<TK, coming> *&node, TK key,coming pointer, Node<TK, coming> *key_right_tree = nullptr);
+    SplitResult<TK, coming> *split_par(Node<TK, coming> *&node, TK key, coming pointer, Node<TK, coming> *key_right_tree = nullptr);
     SplitResult<TK, coming> *split_impar(Node<TK, coming> *&node, TK key, coming pointer, Node<TK, coming> *key_right_tree = nullptr);
 
     void remove(Node<TK, coming> *child, Node<TK, coming> *parent, TK key);
@@ -484,7 +484,7 @@ SplitResult<TK, coming> *BTree<TK, coming>::insert(Node<TK, coming> *&node, TK k
 }
 
 template<typename TK, typename coming>
-void BTree<TK, coming>::relocate(Node<TK, coming> *&node, TK key,coming pointer, Node<TK, coming> *key_right_tree) {
+void BTree<TK, coming>::relocate(Node<TK, coming> *&node, TK key, coming pointer, Node<TK, coming> *key_right_tree) {
     int i = node->count - 1;
     // se  mueve las keys para dejar espacio para la nueva key
     while (i >= 0 && key < node->keys[i].first) {
@@ -493,7 +493,7 @@ void BTree<TK, coming>::relocate(Node<TK, coming> *&node, TK key,coming pointer,
         i--;
     }
     i++;
-    node->keys[i] = pair(key,pointer);
+    node->keys[i] = pair(key, pointer);
     node->children[i + 1] = key_right_tree;
     node->count++;
 }
@@ -516,7 +516,7 @@ Node<TK, coming> *BTree<TK, coming>::generate_right_node(Node<TK, coming> *&node
 }
 
 template<typename TK, typename coming>
-SplitResult<TK, coming> *BTree<TK, coming>::split_par(Node<TK,coming> *&node, TK key,coming pointer, Node<TK,coming> *key_right_tree) {
+SplitResult<TK, coming> *BTree<TK, coming>::split_par(Node<TK, coming> *&node, TK key, coming pointer, Node<TK, coming> *key_right_tree) {
     // calcular el elemento central
     int m = (M - 1) / 2;
     TK middle = node->keys[m];
@@ -528,7 +528,7 @@ SplitResult<TK, coming> *BTree<TK, coming>::split_par(Node<TK,coming> *&node, TK
     if (key < middle)
         relocate(node, key, pointer, key_right_tree);
     else
-        relocate(right_node, key,pointer, key_right_tree);
+        relocate(right_node, key, pointer, key_right_tree);
     // retornar el elemento central y el nodo derecho
     return new SplitResult<TK, coming>(middle, right_node);
 }

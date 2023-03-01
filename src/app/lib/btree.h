@@ -431,7 +431,7 @@ template<typename TK, typename coming>
 void BTree<TK, coming>::insert(TK key, coming pointer) {
     if (this->root == nullptr) {
         this->root = new Node<TK, coming>(this->M, true);
-        root->insert(key);
+        root->insert(key, pointer);
     } else {
         SplitResult<TK, coming> *split_result = insert(this->root, key, pointer);
         if (split_result != nullptr) {
@@ -457,7 +457,7 @@ SplitResult<TK, coming> *BTree<TK, coming>::insert(Node<TK, coming> *&node, TK k
     if (node->leaf) {
         // si la hoja tiene espacio, insertar
         if (node->count < M - 1)
-            relocate(node, key);
+            relocate(node, key, pointer);
         // dividir y retornar el resultado al antecesor
         else if (M % 2 == 0)
             return split_par(node, key, pointer);
@@ -472,12 +472,12 @@ SplitResult<TK, coming> *BTree<TK, coming>::insert(Node<TK, coming> *&node, TK k
         if (split_result != nullptr) {
             // si hay espacio, reubicar el split_result
             if (node->count < M - 1)
-                relocate(node, split_result->key, split_result->right_tree);
+                relocate(node, split_result->key, pointer, split_result->right_tree);
             // caso, dividir y retornar el nuevo nodo al antecesor
             else if (M % 2 == 0)
-                return split_par(node, split_result->key, split_result->right_tree);
+                return split_par(node, split_result->key, pointer, split_result->right_tree);
             else
-                return split_impar(node, split_result->key, split_result->right_tree);
+                return split_impar(node, split_result->key, pointer, split_result->right_tree);
         }
     }
     return nullptr;

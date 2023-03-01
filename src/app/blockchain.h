@@ -6,13 +6,13 @@
 #define PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
 
 #include "../app/lib/dynamic_array.hpp"
+#include "../app/lib/hash.hpp"
 #include "../app/lib/heap.hpp"
+#include "../app/lib/patriciatrie.hpp"
 #include "block.hpp"
 #include "fstream"
 #include "lib/circular_array.hpp"
 #include "transaction.h"
-#include "../app/lib/patriciatrie.hpp"
-#include "../app/lib/hash.hpp"
 
 
 class blockchain {
@@ -32,9 +32,12 @@ public:
     block<transaction *> *getLastBlock();
 
 
-    dynamic_array<transaction *> getTransactionsByKey(std::string key, size_t limit);
+    dynamic_array<transaction *> getTransactionsByKey(const std::string &key, size_t limit);
 
     [[nodiscard]] size_t getSize() const;
+    void addBlock(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end);
+    void transactionsToBlocks(size_t transactionsPerBlock);
+    void indexNewData(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end);
 
 
 private:
@@ -48,8 +51,8 @@ private:
 
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
-    TriePatricia<transaction*> patricia;
-    ChainHash<string ,transaction*> Hash;
+    TriePatricia<transaction *> patricia;
+    ChainHash<string, transaction *> Hash;
 
 
     circular_array<transaction *> transactions;

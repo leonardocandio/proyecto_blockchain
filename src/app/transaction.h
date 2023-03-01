@@ -21,6 +21,9 @@ public:
 
     [[nodiscard]] double getAmount() const;
     [[nodiscard]] std::string getNameDest() const;
+    std::string getTipePay() const;
+
+    std::string getuniq() const;
 
 private:
     unsigned short step{};
@@ -32,9 +35,7 @@ private:
     std::string nameDest;
     double oldbalanceDest{};
     double newbalanceDest{};
-
-
 };
 
 
-#endif //PROYECTO_BLOCKCHAIN_TRANSACTION_H
+#endif//PROYECTO_BLOCKCHAIN_TRANSACTION_H

@@ -5,10 +5,9 @@
 #ifndef PROYECTO_BLOCKCHAIN_HASH_HPP
 #define PROYECTO_BLOCKCHAIN_HASH_HPP
 
-#include <forward_list>
+#include "forward_list.hpp"
 #include "iostream"
 
-using namespace std;
 
 const int maxColision = 3;
 const float maxFillFactor = 0.5;
@@ -34,11 +33,10 @@ private:
 
 
         //overload conversion for ostream
-        friend ostream &operator<<(ostream &os, const Proxy &p) {
+        friend std::ostream &operator<<(std::ostream &os, const Proxy &p) {
             os << p.hash->get(p.key);
             return os;
         }
-
     };
 
 
@@ -47,19 +45,16 @@ private:
         TV second;
 
         Entry(TK key, TV value) : first(key), second(value) {}
-
     };
 
-    forward_list<Entry> *array;
+    ForwardList<Entry> *array;
     size_t capacity;//tamanio del array
-    size_t size;//cantidad de elementos totales
+    size_t size;    //cantidad de elementos totales
 
 public:
-
     ChainHash() {
-        // TODO: asignar un tamanio inicial al array
         capacity = 10;
-        array = new forward_list<Entry>[capacity];
+        array = new ForwardList<Entry>[capacity];
         size = 0;
     }
 
@@ -72,7 +67,7 @@ public:
 
         //Completar para el caso cuando el set tiene que actualizar
 
-        for (auto &it: array[index]) {
+        for (auto it: array[index]) {
             if (it.first == key) {
                 it.second = value;
                 return;
@@ -109,8 +104,6 @@ public:
     void remove(TK key) {
 
 
-        //solve segmentation fault
-
         size_t hashcode = getHashCode(key);
         int index = hashcode % capacity;
 
@@ -122,17 +115,16 @@ public:
                 return;
             }
             prev++;
-
         }
     }
 
     //TODO +1 en el parcial: implementar el operador corchete [ ], read/write
 
-    typename forward_list<Entry>::iterator begin(size_t n) {
+    typename ForwardList<Entry>::iterator begin(size_t n) {
         return array[n].begin();
     }
 
-    typename forward_list<Entry>::iterator end(size_t n) {
+    typename ForwardList<Entry>::iterator end(size_t n) {
         return array[n].end();
     }
 
@@ -155,11 +147,11 @@ private:
         auto oldArray = array;
         auto oldCapacity = capacity;
         capacity *= 2;
-        array = new forward_list<Entry>[capacity];
+        array = new ForwardList<Entry>[capacity];
         size = 0;
 
         for (int i = 0; i < int(oldCapacity); i++) {
-            for (auto &it: oldArray[i]) {
+            for (auto it: oldArray[i]) {
                 set(it.first, it.second);
             }
         }

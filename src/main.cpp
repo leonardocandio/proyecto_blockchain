@@ -40,7 +40,7 @@ int main() {
                             t["newbalanceDest"].d()));
                 }
                 try {
-                    bc.addBlock(transactions);
+                    bc.addBlock(transactions.begin(), transactions.end());
                 } catch (...) {
                     return crow::response(400);
                 }

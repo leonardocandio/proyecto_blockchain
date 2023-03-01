@@ -170,11 +170,13 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
             }
             break;
         }
-        case TYPE:
+        case TYPE: {
             break;
-        case NAMEORIG:
+        }
+        case NAMEORIG: {
             break;
-        case OLDBALANCEORG:
+        }
+        case OLDBALANCEORG: {
             switch (resolveSearchType(type)) {
                 case MAX: {
                     auto temp = maxHeapOldbalanceOrg;
@@ -193,7 +195,9 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                     break;
                 }
             }
-        case NEWBALANCEORIG:
+            break;
+        }
+        case NEWBALANCEORIG: {
             switch (resolveSearchType(type)) {
                 case MAX: {
                     auto temp = maxHeapNewbalanceOrig;
@@ -212,9 +216,12 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                     break;
                 }
             }
-        case NAMEDEST:
             break;
-        case OLDBALANCEDEST:
+        }
+        case NAMEDEST: {
+            break;
+        }
+        case OLDBALANCEDEST: {
             switch (resolveSearchType(type)) {
                 case MAX: {
                     auto temp = maxHeapOldbalanceDest;
@@ -233,8 +240,9 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                     break;
                 }
             }
-
-        case NEWBALANCEDEST:
+            break;
+        }
+        case NEWBALANCEDEST: {
             switch (resolveSearchType(type)) {
                 case MAX: {
                     auto temp = maxHeapNewbalanceDest;
@@ -253,6 +261,8 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                     break;
                 }
             }
+            break;
+        }
     }
     return result;
 }

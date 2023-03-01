@@ -147,6 +147,10 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                                                                     size_t rangeHigh) {
     dynamic_array<transaction *> result;
     switch (resolveSearchParam(param)) {
+        case ALL: {
+            result.push_back(hashMap[type]);
+            break;
+        }
         case AMOUNT: {
             switch (resolveSearchType(type)) {
                 case MAX: {
@@ -267,12 +271,12 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
     return result;
 }
 
-blockchain::searchType blockchain::resolveSearchType(std::string_view const &key) const {
-    if (key == "max") {
+blockchain::searchType blockchain::resolveSearchType(std::string_view const &type) const {
+    if (type == "max") {
         return MAX;
-    } else if (key == "min") {
+    } else if (type == "min") {
         return MIN;
-    } else if (key == "range") {
+    } else if (type == "range") {
         return RANGE;
     } else {
         throw std::invalid_argument("Invalid search type");
@@ -289,6 +293,8 @@ blockchain::searchParam blockchain::resolveSearchParam(const std::string_view &p
         return OLDBALANCEDEST;
     } else if (param == "newbalanceDest") {
         return NEWBALANCEDEST;
+    } else if (param == "all") {
+        return ALL;
     } else {
         throw std::invalid_argument("Invalid search param");
     }

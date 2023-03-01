@@ -77,7 +77,7 @@ private:
     enum searchType {
         MAX,
         MIN,
-        RANGE
+        RANGE,
     };
     enum searchParam {
         TYPE,
@@ -87,11 +87,12 @@ private:
         NEWBALANCEORIG,
         NAMEDEST,
         OLDBALANCEDEST,
-        NEWBALANCEDEST
+        NEWBALANCEDEST,
+        ALL
     };
 
-    searchType resolveSearchType(std::string_view const &type) const;
-    searchParam resolveSearchParam(std::string_view const &param) const;
+    [[nodiscard]] searchType resolveSearchType(std::string_view const &type) const;
+    [[nodiscard]] searchParam resolveSearchParam(std::string_view const &param) const;
 };
 
 

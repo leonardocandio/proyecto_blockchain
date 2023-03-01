@@ -11,6 +11,7 @@
           <option value="1">Minimo valor</option>
           <option value="2">Maximo valor</option>
           <option value="3">Rango</option>
+          <option value="4">Identificador</option>
         </optgroup>
         <!--<optgroup label="ingresar texto">
           <option value="3">ingresa un key</option>
@@ -44,7 +45,33 @@
       </select>
       <label>Ingresa el parámetro</label>
     </div>
-
+    <div id="idInputStep" class="input-field col s6" hidden="hidden">
+      <input
+        v-model="searchStep"
+        id="input"
+        type="number"
+        class="validate"
+        required>
+      <label for="input">Ingrese step</label>
+    </div>
+    <div id="idInputNameOrig" class="input-field col s6" hidden="hidden">
+      <input
+        v-model="searchNameOrig"
+        id="input"
+        type="text"
+        class="validate"
+        required>
+      <label for="input">Ingrese nameOrig</label>
+    </div>
+    <div id="idInputNameDest" class="input-field col s6" hidden="hidden">
+      <input
+        v-model="searchNameDest"
+        id="input"
+        type="text"
+        class="validate"
+        required>
+      <label for="input">Ingrese nameDest</label>
+    </div>
     <div class="input-field col s6" id="limitInput" hidden="hidden">
       <input
         v-model="searchQuery.limit"
@@ -120,7 +147,9 @@ export default {
         rangeLow: "",
         rangeHigh: ""
       },
-
+      searchStep: "",
+      searchNameOrig: "",
+      searchNameDest: "",
       search: []
     };
   },
@@ -137,21 +166,42 @@ export default {
         document.getElementById("limitInput").removeAttribute("hidden");
         document.getElementById("rangeInputHigh").setAttribute("hidden", "hidden");
         document.getElementById("rangeInputLow").setAttribute("hidden", "hidden");
+        document.getElementById("paramSelect").removeAttribute("hidden");
+        document.getElementById("idInputStep").setAttribute("hidden", "hidden");
+        document.getElementById("idInputNameOrig").setAttribute("hidden", "hidden");
+        document.getElementById("idInputNameDest").setAttribute("hidden", "hidden");
 
         this.searchQuery.type = "min";
       } else if (event.target.value === "2") {
         document.getElementById("limitInput").removeAttribute("hidden");
         document.getElementById("rangeInputHigh").setAttribute("hidden", "hidden");
         document.getElementById("rangeInputLow").setAttribute("hidden", "hidden");
+        document.getElementById("paramSelect").removeAttribute("hidden");
+        document.getElementById("idInputStep").setAttribute("hidden", "hidden");
+        document.getElementById("idInputNameOrig").setAttribute("hidden", "hidden");
+        document.getElementById("idInputNameDest").setAttribute("hidden", "hidden");
 
         this.searchQuery.type = "max";
       } else if (event.target.value === "3") {
         document.getElementById("limitInput").setAttribute("hidden", "hidden");
         document.getElementById("rangeInputHigh").removeAttribute("hidden");
         document.getElementById("rangeInputLow").removeAttribute("hidden");
+        document.getElementById("paramSelect").removeAttribute("hidden");
+        document.getElementById("idInputStep").setAttribute("hidden", "hidden");
+        document.getElementById("idInputNameOrig").setAttribute("hidden", "hidden");
+        document.getElementById("idInputNameDest").setAttribute("hidden", "hidden");
+
         this.searchQuery.type = "range";
+      } else if (event.target.value === "4") {
+        document.getElementById("paramSelect").setAttribute("hidden", "hidden");
+        document.getElementById("limitInput").setAttribute("hidden", "hidden");
+        document.getElementById("rangeInputHigh").setAttribute("hidden", "hidden");
+        document.getElementById("rangeInputLow").setAttribute("hidden", "hidden");
+        document.getElementById("idInputStep").removeAttribute("hidden");
+        document.getElementById("idInputNameOrig").removeAttribute("hidden");
+        document.getElementById("idInputNameDest").removeAttribute("hidden");
+        this.searchQuery.param = "all";
       }
-      document.getElementById("paramSelect").removeAttribute("hidden");
     },
     changeParam: function(event) {
       if (event.target.value === "1") {
@@ -167,11 +217,13 @@ export default {
       }
     },
     Busqueda() {
+      if (this.searchQuery.param === "all") {
+        this.searchQuery.type = this.searchStep + this.searchNameOrig + this.searchNameDest;
+      }
       const transaction = { ...this.searchQuery };
       console.log("body: ", transaction);
       Services.searchBlock(transaction).then((response) => {
-        this.search = response.data,
-          console.log(response);
+        this.search = response.data;
       });
       let element = document.getElementById("tabla");
       element.removeAttribute("hidden");

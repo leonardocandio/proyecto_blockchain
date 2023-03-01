@@ -81,7 +81,7 @@ public:
     TV &get(TK key) {
         size_t hashcode = getHashCode(key);
         int index = hashcode % capacity;
-        for (auto &it: array[index]) {
+        for (auto it: array[index]) {
             if (it.first == key) {
                 return it.second;
             }

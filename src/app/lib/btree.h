@@ -16,10 +16,10 @@ using namespace std;
 ////// NODO BTREE ///////
 
 
-template<typename TK>
+template<typename TK, typename coming>
 struct Node {
     // array de keys
-    TK *keys;
+    pair<TK,coming> *keys;
     // array de punteros a hijos
     Node **children;
     // cantidad de keys
@@ -30,7 +30,7 @@ struct Node {
     Node() : keys(nullptr), children(nullptr), count(0), leaf(true) {}
     Node(int M, bool _leaf = true) {
         this->keys = new TK[M - 1];
-        this->children = new Node<TK> *[M];
+        this->children = new Node<TK,coming> *[M];
         for (int i = 0; i < M; i++) {
             this->children[i] = nullptr;
         }
@@ -38,21 +38,21 @@ struct Node {
         this->leaf = _leaf;
     }
 
-    int insert(TK value) {
+    int insert(TK value, coming pointer) {
         int i = this->count - 1;
         for (; i >= 0; i--) {
-            if (value > this->keys[i]) {
+            if (value > this->keys[i].first) {
                 break;
             } else {
                 this->keys[i + 1] = this->keys[i];
             }
         }
-        this->keys[i + 1] = value;
+        this->keys[i + 1] = pair(value,pointer);
         (this->count)++;
         return i + 1;
     }
 
-    int insert(Node<TK> *node, int M, Node<TK> *cmp) {
+    int insert(Node<TK,coming> *node, int M, Node<TK,coming> *cmp) {
         int i = M - 1;
         for (; i >= 0; i--) {
             if (children[i] == cmp) {
@@ -136,18 +136,18 @@ struct Node {
 
 
 /////////// BTREE //////
-template<typename TK>
+template<typename TK, typename coming>
 struct SplitResult {
     TK key;
-    Node<TK> *right_tree;
+    Node<TK, coming> *right_tree;
     SplitResult() { right_tree = nullptr; }
-    SplitResult(TK _k, Node<TK> *_node) : key(_k), right_tree(_node) {}
+    SplitResult(TK _k, Node<TK, coming> *_node) : key(_k), right_tree(_node) {}
 };
 
-template<typename TK>
+template<typename TK, typename coming>
 class BTree {
 private:
-    Node<TK> *root;
+    Node<TK, coming> *root;
     int M;// grado u orden del arbol
     int n;// total de elementos en el arbol
 
@@ -156,7 +156,7 @@ public:
     BTree(int _M) : root(nullptr), M(_M), n(0) {}
 
     bool search(TK key) { return search(this->root, key); };                 //indica si se encuentra o no un elemento
-    void insert(TK key);                                                     //inserta un elemento
+    void insert(TK key, coming pointer);                                                     //inserta un elemento
     void remove(TK key);                                                     //elimina un elemento
     int height() { return height(this->root); };                             //altura del arbol. Considerar altura -1 para arbol vacio
     string toString(const string &sep) { return toString(this->root, sep); };// recorrido inorder
@@ -179,54 +179,54 @@ public:
     }
 
 private:
-    void rangeSearch(Node<TK> *node, TK min, TK max) {
+    void rangeSearch(Node<TK, coming> *node, TK min, TK max) {
         if (node == nullptr) return;
         int i = 0;
-        while (i < node->count && node->keys[i] < min)
+        while (i < node->count && node->keys[i].first < min)
             i++;
-        if (i < node->count && node->keys[i] >= min && node->keys[i] <= max)
-            cout << node->keys[i] << " ";
+        if (i < node->count && node->keys[i].first >= min && node->keys[i].first <= max)
+            cout << node->keys[i].first << " ";
         if (node->leaf)
             return;
         rangeSearch(node->children[i], min, max);
-        while (i < node->count && node->keys[i] <= max) {
+        while (i < node->count && node->keys[i].first <= max) {
             rangeSearch(node->children[i + 1], min, max);
             i++;
         }
     }
 
-    bool search(Node<TK> *&node, TK key);
+    bool search(Node<TK, coming> *&node, TK key);
 
-    SplitResult<TK> *insert(Node<TK> *&node, TK key);
-    void relocate(Node<TK> *&node, TK key, Node<TK> *key_right_tree = nullptr);
-    Node<TK> *generate_right_node(Node<TK> *&node, int from);
-    SplitResult<TK> *split_par(Node<TK> *&node, TK key, Node<TK> *key_right_tree = nullptr);
-    SplitResult<TK> *split_impar(Node<TK> *&node, TK key, Node<TK> *key_right_tree = nullptr);
+    SplitResult<TK, coming> *insert(Node<TK, coming> *&node, TK key, coming pointer);
+    void relocate(Node<TK, coming> *&node, TK key,coming pointer, Node<TK, coming> *key_right_tree = nullptr);
+    Node<TK, coming> *generate_right_node(Node<TK, coming> *&node, int from);
+    SplitResult<TK, coming> *split_par(Node<TK, coming> *&node, TK key,coming pointer, Node<TK, coming> *key_right_tree = nullptr);
+    SplitResult<TK, coming> *split_impar(Node<TK, coming> *&node, TK key, coming pointer, Node<TK, coming> *key_right_tree = nullptr);
 
-    void remove(Node<TK> *child, Node<TK> *parent, TK key);
-    Node<TK> *successor(Node<TK> *node, int idx);
-    Node<TK> *predecessor(Node<TK> *node, int idx);
-    Node<TK> *minNode(Node<TK> *node);
-    Node<TK> *maxNode(Node<TK> *node);
+    void remove(Node<TK, coming> *child, Node<TK, coming> *parent, TK key);
+    Node<TK, coming> *successor(Node<TK, coming> *node, int idx);
+    Node<TK, coming> *predecessor(Node<TK, coming> *node, int idx);
+    Node<TK, coming> *minNode(Node<TK, coming> *node);
+    Node<TK, coming> *maxNode(Node<TK, coming> *node);
 
-    int height(Node<TK> *node);
-    string toString(Node<TK> *node, const string &sep);
+    int height(Node<TK, coming> *node);
+    string toString(Node<TK, coming> *node, const string &sep);
 
-    TK minKey(Node<TK> *node);
-    TK maxKey(Node<TK> *node);
+    TK minKey(Node<TK, coming> *node);
+    TK maxKey(Node<TK, coming> *node);
 
-    void display_pretty(Node<TK> *root);
+    void display_pretty(Node<TK, coming> *root);
 };
 
-template<typename TK>
-bool BTree<TK>::search(Node<TK> *&node, TK key) {
+template<typename TK, typename coming>
+bool BTree<TK, coming>::search(Node<TK, coming> *&node, TK key) {
     if (node == nullptr) { return false; }
 
     for (int i = 0; i < node->count; i++) {
-        if (node->keys[i] == key) {
+        if (node->keys[i].first == key) {
             return true;
         } else {
-            if (key < node->keys[i]) {
+            if (key < node->keys[i].first) {
                 return search(node->children[i], key);
             }
             if (i + 1 == node->count) {
@@ -237,20 +237,20 @@ bool BTree<TK>::search(Node<TK> *&node, TK key) {
     return false;
 }
 
-template<typename TK>
-void BTree<TK>::remove(TK key) {
+template<typename TK, typename coming>
+void BTree<TK, coming>::remove(TK key) {
     if (this->root != nullptr) {
         remove(this->root, this->root, key);
     }
     (this->n)--;
 }
 
-template<typename TK>
-void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
+template<typename TK, typename coming>
+void BTree<TK, coming>::remove(Node<TK, coming> *child, Node<TK, coming> *parent, TK key) {
     int i = 0;
     bool found = false;
     for (; i < child->count; i++) {
-        if (key == child->keys[i]) {
+        if (key == child->keys[i].first) {
             found = true;
             break;
         }
@@ -263,7 +263,7 @@ void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
     else if (!found & !child->leaf) {
         int idx = 0;
         for (; idx < child->count; idx++) {
-            if (key < child->keys[idx]) {
+            if (key < child->keys[idx].first) {
                 remove(child->children[idx], child, key);
                 break;
             } else if (idx + 1 == child->count) {
@@ -278,9 +278,9 @@ void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
     }
     // *Se encontro y es un nodo interno.
     else if (found & !child->leaf) {
-        Node<TK> *sc = successor(child, i);
-        TK temp = sc->keys[0];
-        sc->keys[0] = key;
+        Node<TK, coming> *sc = successor(child, i);
+        TK temp = sc->keys[0].first;
+        sc->keys[0].first = key;
         child->keys[i] = temp;
         remove(child->children[i + 1], child, key);
         //return; // warning
@@ -295,7 +295,7 @@ void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
                 break;
             }
         }
-        Node<TK> *hermano = nullptr;
+        Node<TK, coming> *hermano = nullptr;
         int idxKeyParent;
         int idxNodeHermano;
         bool right = false;
@@ -314,7 +314,7 @@ void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
             if (parent->children[ichild - 1]->count > minKeys) {
                 hermano = parent->children[ichild - 1];
             }
-        } else if (0 < ichild & ichild < parent->count)// *Inmediato derecho e izquierdo.
+        } else if (0 < ichild && ichild < parent->count)// *Inmediato derecho e izquierdo.
         {
             if (parent->children[ichild + 1]->count > minKeys) {
                 hermano = parent->children[ichild + 1];
@@ -354,11 +354,11 @@ void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
       cout<<"Parent: ";parent->display_keys();cout<<endl;
       cout<<"Child: ";child->display_keys();cout<<endl; */
 
-            Node<TK> *hermano = parent->children[idxNodeHermano];
+            Node<TK, coming> *hermano = parent->children[idxNodeHermano];
             /*       cout<<"Hermano: ";hermano->display_keys();cout<<endl;
  */
             if (!right) {
-                Node<TK> *temp = child;
+                Node<TK, coming> *temp = child;
                 child = hermano;
                 hermano = temp;
                 idxNodeHermano++;
@@ -378,7 +378,7 @@ void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
                     idxInsertedParent++;
                 }
             }
-            Node<TK> *temp = hermano;
+            Node<TK, coming> *temp = hermano;
             parent->remove(idxNodeHermano, this->M);
             /*       cout<<"Merge FINAL"<<endl;
       cout<<"Parent after: ";parent->display_keys();cout<<endl;
@@ -391,7 +391,7 @@ void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
         /*     cout<<"rrrr"<<endl;
  */
         if (child->children[0] != nullptr) {
-            Node<TK> *temp = child->children[0];
+            Node<TK, coming> *temp = child->children[0];
             child->children[0] = nullptr;
             this->root->killSelf();
             this->root = temp;
@@ -399,18 +399,18 @@ void BTree<TK>::remove(Node<TK> *child, Node<TK> *parent, TK key) {
     }
 }
 
-template<typename TK>
-Node<TK> *BTree<TK>::successor(Node<TK> *node, int idx) {
+template<typename TK, typename coming>
+Node<TK, coming> *BTree<TK, coming>::successor(Node<TK, coming> *node, int idx) {
     return minNode(node->children[idx + 1]);
 }
 
-template<typename TK>
-Node<TK> *BTree<TK>::predecessor(Node<TK> *node, int idx) {
+template<typename TK, typename coming>
+Node<TK, coming> *BTree<TK, coming>::predecessor(Node<TK, coming> *node, int idx) {
     return maxNode(node->children[idx - 1]);
 }
 
-template<typename TK>
-Node<TK> *BTree<TK>::minNode(Node<TK> *node) {
+template<typename TK, typename coming>
+Node<TK, coming> *BTree<TK, coming>::minNode(Node<TK, coming> *node) {
     if (node->leaf) {
         return node;
     } else {
@@ -418,8 +418,8 @@ Node<TK> *BTree<TK>::minNode(Node<TK> *node) {
     }
 }
 
-template<typename TK>
-Node<TK> *maxNode(Node<TK> *node) {
+template<typename TK, typename coming>
+Node<TK, coming> *maxNode(Node<TK, coming> *node) {
     if (node->leaf) {
         return node;
     } else {
@@ -427,16 +427,16 @@ Node<TK> *maxNode(Node<TK> *node) {
     }
 }
 
-template<typename TK>
-void BTree<TK>::insert(TK key) {
+template<typename TK, typename coming>
+void BTree<TK, coming>::insert(TK key, coming pointer) {
     if (this->root == nullptr) {
-        this->root = new Node<TK>(this->M, true);
+        this->root = new Node<TK, coming>(this->M, true);
         root->insert(key);
     } else {
-        SplitResult<TK> *split_result = insert(this->root, key);
+        SplitResult<TK, coming> *split_result = insert(this->root, key, pointer);
         if (split_result != nullptr) {
-            Node<TK> *parent = new Node<TK>(M, false);
-            parent->keys[0] = split_result->key;
+            auto *parent = new Node<TK, coming>(M, false);
+            parent->keys[0] = split_result;
             parent->children[0] = root;
             parent->children[1] = split_result->right_tree;
             parent->count = 1;
@@ -446,12 +446,12 @@ void BTree<TK>::insert(TK key) {
     (this->n)++;
 }
 
-template<typename TK>
-SplitResult<TK> *BTree<TK>::insert(Node<TK> *&node, TK key) {
+template<typename TK, typename coming>
+SplitResult<TK, coming> *BTree<TK, coming>::insert(Node<TK, coming> *&node, TK key, coming pointer) {
     int i = 0;
-    while (i < node->count && key > node->keys[i])
+    while (i < node->count && key > node->keys[i].first)
         i++;
-    if (i < node->count && node->keys[i] == key)
+    if (i < node->count && node->keys[i].first == key)
         return nullptr;
 
     if (node->leaf) {
@@ -460,14 +460,14 @@ SplitResult<TK> *BTree<TK>::insert(Node<TK> *&node, TK key) {
             relocate(node, key);
         // dividir y retornar el resultado al antecesor
         else if (M % 2 == 0)
-            return split_par(node, key);
+            return split_par(node, key, pointer);
         else
-            return split_impar(node, key);
+            return split_impar(node, key, pointer);
     }
     // es nodo interno
     else {
         // insertar en el hijo respectivo
-        SplitResult<TK> *split_result = insert(node->children[i], key);
+        SplitResult<TK, coming> *split_result = insert(node->children[i], key, pointer);
         // si split_result != null es porque se produjo un split en el children[i]
         if (split_result != nullptr) {
             // si hay espacio, reubicar el split_result
@@ -483,24 +483,24 @@ SplitResult<TK> *BTree<TK>::insert(Node<TK> *&node, TK key) {
     return nullptr;
 }
 
-template<typename TK>
-void BTree<TK>::relocate(Node<TK> *&node, TK key, Node<TK> *key_right_tree) {
+template<typename TK, typename coming>
+void BTree<TK, coming>::relocate(Node<TK, coming> *&node, TK key,coming pointer, Node<TK, coming> *key_right_tree) {
     int i = node->count - 1;
     // se  mueve las keys para dejar espacio para la nueva key
-    while (i >= 0 && key < node->keys[i]) {
+    while (i >= 0 && key < node->keys[i].first) {
         node->keys[i + 1] = node->keys[i];
         node->children[i + 2] = node->children[i + 1];
         i--;
     }
     i++;
-    node->keys[i] = key;
+    node->keys[i] = pair(key,pointer);
     node->children[i + 1] = key_right_tree;
     node->count++;
 }
 
-template<typename TK>
-Node<TK> *BTree<TK>::generate_right_node(Node<TK> *&node, int from) {
-    Node<TK> *right_node = new Node<TK>(M, node->leaf);
+template<typename TK, typename coming>
+Node<TK, coming> *BTree<TK, coming>::generate_right_node(Node<TK, coming> *&node, int from) {
+    auto *right_node = new Node<TK, coming>(M, node->leaf);
     // copiar llaves e hijos desde el nodo original
     int i = from, j = 0;
     while (i < M - 1)// recordar que el nodo esta lleno
@@ -515,27 +515,27 @@ Node<TK> *BTree<TK>::generate_right_node(Node<TK> *&node, int from) {
     return right_node;
 }
 
-template<typename TK>
-SplitResult<TK> *BTree<TK>::split_par(Node<TK> *&node, TK key, Node<TK> *key_right_tree) {
+template<typename TK, typename coming>
+SplitResult<TK, coming> *BTree<TK, coming>::split_par(Node<TK,coming> *&node, TK key,coming pointer, Node<TK,coming> *key_right_tree) {
     // calcular el elemento central
     int m = (M - 1) / 2;
     TK middle = node->keys[m];
     // crear nodo derecho desde m+1
-    Node<TK> *right_node = generate_right_node(node, m + 1);
+    Node<TK, coming> *right_node = generate_right_node(node, m + 1);
     // actualizar la cantidad de elementos del nodo
     node->count = m;
     // insertar la key en el lado respectivo
     if (key < middle)
-        relocate(node, key, key_right_tree);
+        relocate(node, key, pointer, key_right_tree);
     else
-        relocate(right_node, key, key_right_tree);
+        relocate(right_node, key,pointer, key_right_tree);
     // retornar el elemento central y el nodo derecho
-    return new SplitResult<TK>(middle, right_node);
+    return new SplitResult<TK, coming>(middle, right_node);
 }
 
-template<typename TK>
-SplitResult<TK> *BTree<TK>::split_impar(Node<TK> *&node, TK key, Node<TK> *key_right_tree) {
-    Node<TK> *right_node;
+template<typename TK, typename coming>
+SplitResult<TK, coming> *BTree<TK, coming>::split_impar(Node<TK, coming> *&node, TK key, coming pointer, Node<TK, coming> *key_right_tree) {
+    Node<TK, coming> *right_node;
     TK middle;
     // calcular el elemento central correctamente
     int m = (M - 1) / 2;
@@ -543,14 +543,14 @@ SplitResult<TK> *BTree<TK>::split_impar(Node<TK> *&node, TK key, Node<TK> *key_r
         right_node = generate_right_node(node, m + 1);
         middle = node->keys[m];
         node->count = m;
-        relocate(right_node, key, key_right_tree);
+        relocate(right_node, key, pointer, key_right_tree);
     } else {
         m = m - 1;
         right_node = generate_right_node(node, m + 1);
         if (key < node->keys[m]) {
             middle = node->keys[m];
             node->count = m;
-            relocate(node, key, key_right_tree);
+            relocate(node, key, pointer, key_right_tree);
         } else {// en caso que la llave a insertar ocupe la mitad
             middle = key;
             node->count = m + 1;
@@ -558,12 +558,12 @@ SplitResult<TK> *BTree<TK>::split_impar(Node<TK> *&node, TK key, Node<TK> *key_r
         }
     }
     // retornar el elemento central y el nodo derecho
-    return new SplitResult<TK>(middle, right_node);
+    return new SplitResult<TK, coming>(middle, right_node);
 }
 
 
-template<typename TK>
-int BTree<TK>::height(Node<TK> *node) {
+template<typename TK, typename coming>
+int BTree<TK, coming>::height(Node<TK, coming> *node) {
     if (node == nullptr) {
         return -1;
     } else {
@@ -571,15 +571,15 @@ int BTree<TK>::height(Node<TK> *node) {
     }
 }
 
-template<typename TK>
-string BTree<TK>::toString(Node<TK> *node, const string &sep) {
+template<typename TK, typename coming>
+string BTree<TK, coming>::toString(Node<TK, coming> *node, const string &sep) {
     string result = "";
     root->toString(result, sep);
     return result.substr(0, result.size() - sep.length());
 }
 
-template<typename TK>
-TK BTree<TK>::minKey(Node<TK> *node) {
+template<typename TK, typename coming>
+TK BTree<TK, coming>::minKey(Node<TK, coming> *node) {
     if (root == nullptr) { throw std::out_of_range("Tree is empty"); }
     if (node->leaf) {
         return node->keys[0];
@@ -588,8 +588,8 @@ TK BTree<TK>::minKey(Node<TK> *node) {
     }
 }
 
-template<typename TK>
-TK BTree<TK>::maxKey(Node<TK> *node) {
+template<typename TK, typename coming>
+TK BTree<TK, coming>::maxKey(Node<TK, coming> *node) {
     if (root == nullptr) { throw std::out_of_range("Tree is empty"); }
     if (node->leaf) {
         return node->keys[node->count - 1];
@@ -598,20 +598,20 @@ TK BTree<TK>::maxKey(Node<TK> *node) {
     }
 }
 
-template<typename TK>
-void BTree<TK>::display_pretty(Node<TK> *root) {
+template<typename TK, typename coming>
+void BTree<TK, coming>::display_pretty(Node<TK, coming> *root) {
     if (root == NULL)
         return;
     int i, j, n;
-    queue<Node<TK> *> q;
+    queue<Node<TK, coming> *> q;
     q.push(root);
     while (!q.empty()) {
         n = q.size();
         for (i = 0; i < n; i++) {
-            Node<TK> *node = q.front();
+            Node<TK, coming> *node = q.front();
             cout << "<";
             for (j = 0; j < node->count; j++)
-                cout << node->keys[j] << " ";
+                cout << node->keys[j].first << " ";
             cout << "> ";
             q.pop();
             if (!node->leaf) {

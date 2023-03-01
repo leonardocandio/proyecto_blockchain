@@ -78,6 +78,10 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine, size_t
         hashMap.set(transactions.back()->getuniq(), transactions.back());
 
         bTreeAmount.insert(transactions.back()->getAmount(), transactions.back());
+        bTreeNewbalanceDest.insert(transactions.back()->getNewbalanceDest(), transactions.back());
+        bTreeNewbalanceOrig.insert(transactions.back()->getNewbalanceOrig(), transactions.back());
+        bTreeOldbalanceDest.insert(transactions.back()->getOldbalanceDest(), transactions.back());
+        bTreeOldbalanceOrg.insert(transactions.back()->getOldbalanceOrg(), transactions.back());
     }
     transactionsToBlocks(transactionPerBlock);
 }

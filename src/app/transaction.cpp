@@ -52,3 +52,8 @@ std::string transaction::getNameDest() const{
 std::string transaction::getTipePay() const{
     return type;
 }
+std::string transaction::getuniq() const{
+    std::stringstream temp;
+    temp << step << nameOrig << nameDest;
+    return temp.str();
+}

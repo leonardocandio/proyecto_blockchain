@@ -94,7 +94,7 @@ void blockchain::indexNewData(const dynamic_array<transaction *> &newT) {
         maxHeap.push(std::make_pair(t->getAmount(), t));
         minHeap.push(std::make_pair(t->getAmount(), t));
         patricia.insert(t->getNameDest(), t);
-        Hash.set(t->getAmount(),t);
+        Hash.set(t->getuniq(),t);
     }
 }
 

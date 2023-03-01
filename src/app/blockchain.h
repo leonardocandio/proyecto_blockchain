@@ -49,7 +49,7 @@ private:
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
     TriePatricia<transaction*> patricia;
-    ChainHash<double,transaction*> Hash;
+    ChainHash<string ,transaction*> Hash;
 
 
     circular_array<transaction *> transactions;

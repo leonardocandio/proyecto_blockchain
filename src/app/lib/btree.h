@@ -138,7 +138,7 @@ struct Node {
 /////////// BTREE //////
 template<typename TK, typename coming>
 struct SplitResult {
-    TK key;
+    Node<TK, coming> key;
     Node<TK, coming> *right_tree;
     SplitResult() { right_tree = nullptr; }
     SplitResult(TK _k, Node<TK, coming> *_node) : key(_k), right_tree(_node) {}
@@ -436,7 +436,7 @@ void BTree<TK, coming>::insert(TK key, coming pointer) {
         SplitResult<TK, coming> *split_result = insert(this->root, key, pointer);
         if (split_result != nullptr) {
             auto *parent = new Node<TK, coming>(M, false);
-            parent->keys[0] = split_result;
+            parent->keys[0] = split_result->key;
             parent->children[0] = root;
             parent->children[1] = split_result->right_tree;
             parent->count = 1;

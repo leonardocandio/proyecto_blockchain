@@ -6,9 +6,7 @@
 template<typename T>
 class List {
 public:
-    virtual ~List(){
-            // TODO
-    };
+    virtual ~List() = default;
     //Contrato
     virtual T front() = 0;
     virtual T back() = 0;

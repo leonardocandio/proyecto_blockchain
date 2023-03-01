@@ -10,10 +10,9 @@
 transaction::transaction(unsigned short step, std::string type, double amount, std::string nameOrig,
                          double oldbalanceOrg,
                          double newbalanceOrig,
-                         std::string nameDest, double oldbalanceDest, double newbalanceDest) :
-        step(step), type(std::move(type)), amount(amount), nameOrig(std::move(nameOrig)), oldbalanceOrg(oldbalanceOrg),
-        newbalanceOrig(newbalanceOrig),
-        nameDest(std::move(nameDest)), oldbalanceDest(oldbalanceDest), newbalanceDest(newbalanceDest) {}
+                         std::string nameDest, double oldbalanceDest, double newbalanceDest) : step(step), type(std::move(type)), amount(amount), nameOrig(std::move(nameOrig)), oldbalanceOrg(oldbalanceOrg),
+                                                                                               newbalanceOrig(newbalanceOrig),
+                                                                                               nameDest(std::move(nameDest)), oldbalanceDest(oldbalanceDest), newbalanceDest(newbalanceDest) {}
 
 std::string transaction::jsonify() const {
     std::stringstream ss;
@@ -46,14 +45,32 @@ double transaction::getAmount() const {
     return amount;
 }
 
-std::string transaction::getNameDest() const{
+std::string transaction::getNameDest() const {
     return nameDest;
 }
-std::string transaction::getTipePay() const{
+std::string transaction::getTipePay() const {
     return type;
 }
-std::string transaction::getuniq() const{
+std::string transaction::getuniq() const {
     std::stringstream temp;
     temp << step << nameOrig << nameDest;
     return temp.str();
+}
+const std::string &transaction::getType() const {
+    return type;
+}
+const std::string &transaction::getNameOrig() const {
+    return nameOrig;
+}
+double transaction::getOldbalanceOrg() const {
+    return oldbalanceOrg;
+}
+double transaction::getNewbalanceOrig() const {
+    return newbalanceOrig;
+}
+double transaction::getOldbalanceDest() const {
+    return oldbalanceDest;
+}
+double transaction::getNewbalanceDest() const {
+    return newbalanceDest;
 }

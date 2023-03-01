@@ -53,13 +53,31 @@ int main() {
                 if (!body) {
                     return crow::response(400);
                 }
-                std::string key = body["key"].s();
-                size_t limit = body["limit"].i();
+                std::string param{};
+                std::string type{};
+                size_t limit{};
+                size_t rangeLow{};
+                size_t rangeHigh{};
 
-                auto transactions = bc.getTransactionsByKey(key, limit);
+                if (body.has("param")) {
+                    param = body["param"].s();
+                }
+                if (body.has("type")) {
+                    type = body["type"].s();
+                }
+                if (body.has("limit")) {
+                    limit = body["limit"].i();
+                }
+                if (body.has("rangeLow")) {
+                    rangeLow = body["rangeLow"].i();
+                }
+                if (body.has("rangeHigh")) {
+                    rangeHigh = body["rangeHigh"].i();
+                }
+                auto transactions = bc.getTransactionsByParamType(param, type, limit, rangeLow, rangeHigh);
                 auto r = crow::json::wvalue({{"transactions", crow::json::load(jsonifyArray(transactions))}});
                 return crow::response(r);
             });
 
-    app.port(3000).run();
+    app.port(3000).multithreaded().run();
 }

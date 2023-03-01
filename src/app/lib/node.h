@@ -2,14 +2,14 @@
 #define NODE_H
 
 template<typename T>
-struct Node {
+struct NodeList {
     T data;
-    Node<T> *next;
-    Node<T> *prev;
+    NodeList<T> *next;
+    NodeList<T> *prev;
 
-    Node() : data(0), next(nullptr), prev(nullptr) {}
+    NodeList() : data(0), next(nullptr), prev(nullptr) {}
 
-    Node(T _data) : data(_data), next(nullptr), prev(nullptr) {}
+    NodeList(T _data) : data(_data), next(nullptr), prev(nullptr) {}
 
     void killSelf() {
         prev->next = next;

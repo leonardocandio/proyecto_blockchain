@@ -10,9 +10,21 @@ bool blockchain::isChainValid() const { return false; }
 
 blockchain::blockchain(size_t _size, unsigned short difficulty) : _size(_size), difficulty(difficulty), lastBlock(firstBlock) {
     firstBlock->mineBlock(difficulty);
-    maxHeap =
+    maxHeapAmount =
             heap<double, transaction *>([](double a, double b) { return a > b; });
-    minHeap =
+    minHeapAmount =
+            heap<double, transaction *>([](double a, double b) { return a < b; });
+    maxHeapOldbalanceOrg =
+            heap<double, transaction *>([](double a, double b) { return a > b; });
+    minHeapOldbalanceOrg =
+            heap<double, transaction *>([](double a, double b) { return a < b; });
+    maxHeapNewbalanceOrig =
+            heap<double, transaction *>([](double a, double b) { return a > b; });
+    minHeapNewbalanceOrig =
+            heap<double, transaction *>([](double a, double b) { return a < b; });
+    maxHeapOldbalanceDest =
+            heap<double, transaction *>([](double a, double b) { return a > b; });
+    minHeapOldbalanceDest =
             heap<double, transaction *>([](double a, double b) { return a < b; });
 }
 
@@ -47,10 +59,19 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine, size_t
         transactions.push_back(
                 new transaction((unsigned short) std::stoi(lineV[0]), lineV[1], std::stod(lineV[2]), lineV[3], std::stod(lineV[4]),
                                 std::stod(lineV[5]), lineV[6], std::stod(lineV[7]), std::stod(lineV[8])));
-        maxHeap.push(std::make_pair(transactions.back()->getAmount(), transactions.back()));
-        minHeap.push(std::make_pair(transactions.back()->getAmount(), transactions.back()));
+        maxHeapAmount.push(std::make_pair(transactions.back()->getAmount(), transactions.back()));
+        minHeapAmount.push(std::make_pair(transactions.back()->getAmount(), transactions.back()));
+        maxHeapOldbalanceOrg.push(std::make_pair(transactions.back()->getOldbalanceOrg(), transactions.back()));
+        minHeapOldbalanceOrg.push(std::make_pair(transactions.back()->getOldbalanceOrg(), transactions.back()));
+        maxHeapNewbalanceOrig.push(std::make_pair(transactions.back()->getNewbalanceOrig(), transactions.back()));
+        minHeapNewbalanceOrig.push(std::make_pair(transactions.back()->getNewbalanceOrig(), transactions.back()));
+        maxHeapOldbalanceDest.push(std::make_pair(transactions.back()->getOldbalanceDest(), transactions.back()));
+        minHeapOldbalanceDest.push(std::make_pair(transactions.back()->getOldbalanceDest(), transactions.back()));
+        //        maxHeapNewbalanceDest.push(std::make_pair(transactions.back()->getNewbalanceDest(), transactions.back()));
+        //        minHeapNewbalanceDest.push(std::make_pair(transactions.back()->getNewbalanceDest(), transactions.back()));
+
         patricia.insert(lineV[6], transactions.back());
-        Hash.set(transactions.back()->getuniq(), transactions.back());
+        hashMap.set(transactions.back()->getuniq(), transactions.back());
     }
     transactionsToBlocks(transactionPerBlock);
 }
@@ -96,40 +117,136 @@ block<transaction *> *blockchain::getLastBlock() { return lastBlock; }
 void blockchain::indexNewData(const dynamic_array<transaction *> &newT) {
     for (const auto &t: newT) {
         transactions.push_back(t);
-    }
-
-    for (const auto &t: newT) {
-        maxHeap.push(std::make_pair(t->getAmount(), t));
-        minHeap.push(std::make_pair(t->getAmount(), t));
+        maxHeapAmount.push(std::make_pair(t->getAmount(), t));
+        minHeapAmount.push(std::make_pair(t->getAmount(), t));
         patricia.insert(t->getNameDest(), t);
-        Hash.set(t->getuniq(), t);
+        hashMap.set(t->getuniq(), t);
+        maxHeapOldbalanceOrg.push(std::make_pair(t->getOldbalanceOrg(), t));
+        minHeapOldbalanceOrg.push(std::make_pair(t->getOldbalanceOrg(), t));
+        maxHeapNewbalanceOrig.push(std::make_pair(t->getNewbalanceOrig(), t));
+        minHeapNewbalanceOrig.push(std::make_pair(t->getNewbalanceOrig(), t));
+        maxHeapOldbalanceDest.push(std::make_pair(t->getOldbalanceDest(), t));
+        minHeapOldbalanceDest.push(std::make_pair(t->getOldbalanceDest(), t));
+        maxHeapNewbalanceDest.push(std::make_pair(t->getNewbalanceDest(), t));
+        minHeapNewbalanceDest.push(std::make_pair(t->getNewbalanceDest(), t));
     }
 }
 
 size_t blockchain::getSize() const { return _size; }
 
-dynamic_array<transaction *> blockchain::getTransactionsByKey(const std::string &key,
-                                                              size_t limit) {
+dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::string &param,
+                                                                    const std::string &type,
+                                                                    size_t limit,
+                                                                    size_t rangeLow,
+                                                                    size_t rangeHigh) {
     dynamic_array<transaction *> result;
-    switch (resolveSearchType(key)) {
-        case MAX: {
-            auto temp = maxHeap;
-            for (size_t i = 0; i < limit; i++) {
-                result.push_back(temp.top().second);
-                temp.pop();
+    switch (resolveSearchParam(param)) {
+        case AMOUNT: {
+            switch (resolveSearchType(type)) {
+                case MAX: {
+                    auto temp = maxHeapAmount;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp.top().second);
+                        temp.pop();
+                    }
+                    break;
+                }
+                case MIN: {
+                    auto temp2 = minHeapAmount;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp2.top().second);
+                        temp2.pop();
+                    }
+                    break;
+                }
+                case RANGE: {
+                }
             }
             break;
         }
-        case MIN: {
-            auto temp2 = minHeap;
-            for (size_t i = 0; i < limit; i++) {
-                result.push_back(temp2.top().second);
-                temp2.pop();
-            }
+        case TYPE:
             break;
-        }
-        default:
-            throw std::invalid_argument("Invalid search type");
+        case NAMEORIG:
+            break;
+        case OLDBALANCEORG:
+            switch (resolveSearchType(type)) {
+                case MAX: {
+                    auto temp = maxHeapOldbalanceOrg;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp.top().second);
+                        temp.pop();
+                    }
+                    break;
+                }
+                case MIN: {
+                    auto temp2 = minHeapOldbalanceOrg;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp2.top().second);
+                        temp2.pop();
+                    }
+                    break;
+                }
+            }
+        case NEWBALANCEORIG:
+            switch (resolveSearchType(type)) {
+                case MAX: {
+                    auto temp = maxHeapNewbalanceOrig;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp.top().second);
+                        temp.pop();
+                    }
+                    break;
+                }
+                case MIN: {
+                    auto temp2 = minHeapNewbalanceOrig;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp2.top().second);
+                        temp2.pop();
+                    }
+                    break;
+                }
+            }
+        case NAMEDEST:
+            break;
+        case OLDBALANCEDEST:
+            switch (resolveSearchType(type)) {
+                case MAX: {
+                    auto temp = maxHeapOldbalanceDest;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp.top().second);
+                        temp.pop();
+                    }
+                    break;
+                }
+                case MIN: {
+                    auto temp2 = minHeapOldbalanceDest;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp2.top().second);
+                        temp2.pop();
+                    }
+                    break;
+                }
+            }
+
+        case NEWBALANCEDEST:
+            switch (resolveSearchType(type)) {
+                case MAX: {
+                    auto temp = maxHeapNewbalanceDest;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp.top().second);
+                        temp.pop();
+                    }
+                    break;
+                }
+                case MIN: {
+                    auto temp2 = minHeapNewbalanceDest;
+                    for (size_t i = 0; i < limit; i++) {
+                        result.push_back(temp2.top().second);
+                        temp2.pop();
+                    }
+                    break;
+                }
+            }
     }
     return result;
 }
@@ -139,8 +256,25 @@ blockchain::searchType blockchain::resolveSearchType(std::string_view const &key
         return MAX;
     } else if (key == "min") {
         return MIN;
+    } else if (key == "range") {
+        return RANGE;
     } else {
         throw std::invalid_argument("Invalid search type");
+    }
+}
+blockchain::searchParam blockchain::resolveSearchParam(const std::string_view &param) const {
+    if (param == "amount") {
+        return AMOUNT;
+    } else if (param == "oldbalanceOrg") {
+        return OLDBALANCEORG;
+    } else if (param == "newbalanceOrig") {
+        return NEWBALANCEORIG;
+    } else if (param == "oldbalanceDest") {
+        return OLDBALANCEDEST;
+    } else if (param == "newbalanceDest") {
+        return NEWBALANCEDEST;
+    } else {
+        throw std::invalid_argument("Invalid search param");
     }
 }
 void blockchain::transactionsToBlocks(size_t transactionsPerBlock) {
@@ -162,9 +296,18 @@ void blockchain::transactionsToBlocks(size_t transactionsPerBlock) {
 void blockchain::indexNewData(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end) {
     for (auto it = begin; it != end; it++) {
         transactions.push_back(*it);
-        maxHeap.push(std::make_pair((*it)->getAmount(), *it));
-        minHeap.push(std::make_pair((*it)->getAmount(), *it));
+        maxHeapAmount.push(std::make_pair((*it)->getAmount(), *it));
+        minHeapAmount.push(std::make_pair((*it)->getAmount(), *it));
+        maxHeapOldbalanceOrg.push(std::make_pair((*it)->getOldbalanceOrg(), *it));
+        minHeapOldbalanceOrg.push(std::make_pair((*it)->getOldbalanceOrg(), *it));
+        maxHeapNewbalanceOrig.push(std::make_pair((*it)->getNewbalanceOrig(), *it));
+        minHeapNewbalanceOrig.push(std::make_pair((*it)->getNewbalanceOrig(), *it));
+        maxHeapOldbalanceDest.push(std::make_pair((*it)->getOldbalanceDest(), *it));
+        minHeapOldbalanceDest.push(std::make_pair((*it)->getOldbalanceDest(), *it));
+        maxHeapNewbalanceDest.push(std::make_pair((*it)->getNewbalanceDest(), *it));
+        minHeapNewbalanceDest.push(std::make_pair((*it)->getNewbalanceDest(), *it));
+
         patricia.insert((*it)->getNameDest(), *it);
-        Hash.set((*it)->getuniq(), (*it));
+        hashMap.set((*it)->getuniq(), (*it));
     }
 }

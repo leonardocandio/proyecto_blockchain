@@ -5,6 +5,7 @@
 #ifndef PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
 #define PROYECTO_BLOCKCHAIN_BLOCKCHAIN_H
 
+#include "../app/lib/btree.h"
 #include "../app/lib/dynamic_array.hpp"
 #include "../app/lib/hash.hpp"
 #include "../app/lib/heap.hpp"
@@ -32,7 +33,7 @@ public:
     block<transaction *> *getLastBlock();
 
 
-    dynamic_array<transaction *> getTransactionsByKey(const std::string &key, size_t limit);
+    dynamic_array<transaction *> getTransactionsByParamType(const std::string &param, const std::string &type, size_t limit, size_t rangeLow, size_t rangeHigh);
 
     [[nodiscard]] size_t getSize() const;
     void addBlock(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end);
@@ -49,20 +50,48 @@ private:
     block<transaction *> *firstBlock = new block<transaction *>();
     block<transaction *> *lastBlock;
 
-    heap<double, transaction *> maxHeap;
-    heap<double, transaction *> minHeap;
+    heap<double, transaction *> maxHeapAmount;
+    heap<double, transaction *> minHeapAmount;
+    heap<double, transaction *> maxHeapOldbalanceOrg;
+    heap<double, transaction *> minHeapOldbalanceOrg;
+    heap<double, transaction *> maxHeapNewbalanceOrig;
+    heap<double, transaction *> minHeapNewbalanceOrig;
+    heap<double, transaction *> maxHeapOldbalanceDest;
+    heap<double, transaction *> minHeapOldbalanceDest;
+    heap<double, transaction *> maxHeapNewbalanceDest;
+    heap<double, transaction *> minHeapNewbalanceDest;
+
+    //    BTree<double, transaction *> bTreeAmount;
+    //    BTree<double, transaction *> bTreeOldbalanceOrg;
+    //    BTree<double, transaction *> bTreeNewbalanceOrig;
+    //    BTree<double, transaction *> bTreeOldbalanceDest;
+    //    BTree<double, transaction *> bTreeNewbalanceDest;
+
+
     TriePatricia<transaction *> patricia;
-    ChainHash<string, transaction *> Hash;
+    ChainHash<string, transaction *> hashMap;
 
 
-    circular_array<transaction *> transactions;
+    dynamic_array<transaction *> transactions;
 
     enum searchType {
         MAX,
-        MIN
+        MIN,
+        RANGE
+    };
+    enum searchParam {
+        TYPE,
+        AMOUNT,
+        NAMEORIG,
+        OLDBALANCEORG,
+        NEWBALANCEORIG,
+        NAMEDEST,
+        OLDBALANCEDEST,
+        NEWBALANCEDEST
     };
 
-    searchType resolveSearchType(std::string_view const &key) const;
+    searchType resolveSearchType(std::string_view const &type) const;
+    searchParam resolveSearchParam(std::string_view const &param) const;
 };
 
 

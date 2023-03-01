@@ -8,19 +8,19 @@
 template<typename T>
 class ForwardList : public List<T> {
 private:
-    Node<T> *head;
+    NodeList<T> *head;
     int nodes;
 
 
 public:
     class iterator {
     private:
-        Node<T> *current;
+        NodeList<T> *current;
 
     public:
         iterator() : current(nullptr) {}
 
-        explicit iterator(Node<T> *node) : current(node) {}
+        explicit iterator(NodeList<T> *node) : current(node) {}
 
         iterator operator++() {
             current = current->next;
@@ -60,7 +60,7 @@ public:
     }
 
     T back() {
-        Node<T> *temp = head;
+        NodeList<T> *temp = head;
         while (temp->next != nullptr) {
             temp = temp->next;
         }
@@ -75,11 +75,11 @@ public:
     }
     void push_front(T data) {
         if (is_empty()) {
-            Node<T> *temp = new Node<T>(data);
+            auto *temp = new NodeList<T>(data);
             head = temp;
             nodes++;
         } else {
-            Node<T> *temp = new Node<T>(data);
+            auto *temp = new NodeList<T>(data);
             temp->next = head;
             head = temp;
             nodes++;
@@ -88,12 +88,12 @@ public:
 
     void push_back(T data) {
         if (is_empty()) {
-            Node<T> *temp = new Node<T>(data);
+            auto *temp = new NodeList<T>(data);
             head = temp;
             nodes++;
         } else {
-            Node<T> *temp = new Node<T>(data);
-            Node<T> *temp2 = head;
+            auto *temp = new NodeList<T>(data);
+            NodeList<T> *temp2 = head;
             while (temp2->next != nullptr) {
                 temp2 = temp2->next;
             }
@@ -106,7 +106,7 @@ public:
         if (is_empty()) {
             throw std::runtime_error("List is empty");
         } else {
-            Node<T> *temp = head;
+            NodeList<T> *temp = head;
             head = head->next;
             nodes--;
             return temp->data;
@@ -117,8 +117,8 @@ public:
         if (is_empty()) {
             throw std::runtime_error("List is empty");
         } else {
-            Node<T> *temp = head;
-            Node<T> *temp2 = head;
+            NodeList<T> *temp = head;
+            NodeList<T> *temp2 = head;
             while (temp->next != nullptr) {
                 temp2 = temp;
                 temp = temp->next;
@@ -138,8 +138,8 @@ public:
             } else if (pos == size()) {
                 push_back(data);
             } else {
-                Node<T> *temp = head;
-                Node<T> *temp2 = new Node<T>(data);
+                NodeList<T> *temp = head;
+                auto *temp2 = new NodeList<T>(data);
                 for (int i = 0; i < pos - 1; i++) {
                     temp = temp->next;
                 }
@@ -159,11 +159,11 @@ public:
             } else if (pos == size()) {
                 pop_back();
             } else {
-                Node<T> *temp = head;
+                NodeList<T> *temp = head;
                 for (int i = 0; i < pos - 1; i++) {
                     temp = temp->next;
                 }
-                Node<T> *temp2 = temp->next;
+                NodeList<T> *temp2 = temp->next;
                 temp->next = temp2->next;
                 nodes--;
             }
@@ -174,7 +174,7 @@ public:
         if (pos < 0 || pos > size()) {
             throw std::runtime_error("Invalid position");
         } else {
-            Node<T> *temp = head;
+            NodeList<T> *temp = head;
             for (int i = 0; i < pos; i++) {
                 temp = temp->next;
             }
@@ -193,9 +193,9 @@ public:
     void clear() {
         if (is_empty())
             return;
-        Node<T> *temp = head;
+        NodeList<T> *temp = head;
         while (temp != nullptr) {
-            Node<T> *temp2 = temp;
+            NodeList<T> *temp2 = temp;
             temp = temp->next;
             delete temp2;
         }
@@ -204,9 +204,9 @@ public:
 
 
     void reverse() {
-        Node<T> *temp = head;
-        Node<T> *temp2 = nullptr;
-        Node<T> *temp3 = nullptr;
+        NodeList<T> *temp = head;
+        NodeList<T> *temp2 = nullptr;
+        NodeList<T> *temp3 = nullptr;
         while (temp != nullptr) {
             temp3 = temp2;
             temp2 = temp;

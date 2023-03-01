@@ -21,8 +21,15 @@ public:
 
     [[nodiscard]] double getAmount() const;
     [[nodiscard]] std::string getNameDest() const;
-    [[nodiscard]] std::string getTipePay() const;
-    [[nodiscard]] std::string getuniq() const;
+    const std::string &getType() const;
+    const std::string &getNameOrig() const;
+    double getOldbalanceOrg() const;
+    double getNewbalanceOrig() const;
+    double getOldbalanceDest() const;
+    double getNewbalanceDest() const;
+    std::string getTipePay() const;
+
+    std::string getuniq() const;
 
 private:
     unsigned short step{};

@@ -61,11 +61,12 @@ private:
     heap<double, transaction *> maxHeapNewbalanceDest;
     heap<double, transaction *> minHeapNewbalanceDest;
 
-    //    BTree<double, transaction *> bTreeAmount;
-    //    BTree<double, transaction *> bTreeOldbalanceOrg;
-    //    BTree<double, transaction *> bTreeNewbalanceOrig;
-    //    BTree<double, transaction *> bTreeOldbalanceDest;
-    //    BTree<double, transaction *> bTreeNewbalanceDest;
+    BTree<double, transaction *> bTreeAmount = BTree<double, transaction *>(5);
+    BTree<double, transaction *> bTreeOldbalanceOrg = BTree<double, transaction *>(5);
+    BTree<double, transaction *> bTreeNewbalanceOrig = BTree<double, transaction *>(5);
+    BTree<double, transaction *> bTreeOldbalanceDest = BTree<double, transaction *>(5);
+    BTree<double, transaction *> bTreeNewbalanceDest = BTree<double, transaction *>(5);
+
 
 
     TriePatricia<transaction *> patricia;

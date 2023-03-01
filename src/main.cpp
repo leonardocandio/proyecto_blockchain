@@ -68,10 +68,8 @@ int main() {
                 if (body.has("limit")) {
                     limit = body["limit"].i();
                 }
-                if (body.has("rangeLow")) {
+                if (type == "range" && body.has("rangeLow") && body.has("rangeHigh")) {
                     rangeLow = body["rangeLow"].i();
-                }
-                if (body.has("rangeHigh")) {
                     rangeHigh = body["rangeHigh"].i();
                 }
                 auto transactions = bc.getTransactionsByParamType(param, type, limit, rangeLow, rangeHigh);

@@ -49,3 +49,6 @@ double transaction::getAmount() const {
 std::string transaction::getNameDest() const{
     return nameDest;
 }
+std::string transaction::getTipePay() const{
+    return type;
+}

@@ -7,19 +7,19 @@
 
 #include "../app/lib/dynamic_array.hpp"
 #include "../app/lib/heap.hpp"
-#include "../app/lib/patriciatrie.hpp"
 #include "block.hpp"
 #include "fstream"
 #include "lib/circular_array.hpp"
 #include "transaction.h"
+#include "../app/lib/patriciatrie.hpp"
+#include "../app/lib/hash.hpp"
+
 
 class blockchain {
 public:
-    explicit blockchain(size_t _size = 0, unsigned short difficulty = 3);
+    blockchain(size_t _size = 0, unsigned short difficulty = 2);
 
     void addBlock(const dynamic_array<transaction *> &newT);
-
-    void addBlock(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end);
 
     [[nodiscard]] bool isChainValid() const;
 
@@ -32,15 +32,13 @@ public:
     block<transaction *> *getLastBlock();
 
 
-    dynamic_array<transaction *> getTransactionsByKey(const std::string &key, size_t limit);
+    dynamic_array<transaction *> getTransactionsByKey(std::string key, size_t limit);
 
     [[nodiscard]] size_t getSize() const;
 
 
 private:
     void indexNewData(const dynamic_array<transaction *> &newT);
-    void indexNewData(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end);
-    void transactionsToBlocks(size_t transactionPerBlock);
 
     size_t _size;
     short unsigned int difficulty;
@@ -50,9 +48,11 @@ private:
 
     heap<double, transaction *> maxHeap;
     heap<double, transaction *> minHeap;
-    TriePatricia<transaction> patriciatrie;
+    TriePatricia<transaction*> patricia;
+    ChainHash<double,transaction*> Hash;
 
-    dynamic_array<transaction *> transactions;
+
+    circular_array<transaction *> transactions;
 
     enum searchType {
         MAX,

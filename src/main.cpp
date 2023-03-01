@@ -65,7 +65,7 @@ int main() {
                 if (body.has("type")) {
                     type = body["type"].s();
                 }
-                if (body.has("limit")) {
+                if ((type == "max" || type == "min") && body.has("limit")) {
                     limit = body["limit"].i();
                 }
                 if (type == "range" && body.has("rangeLow") && body.has("rangeHigh")) {

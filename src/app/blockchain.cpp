@@ -22,6 +22,10 @@ blockchain::blockchain(size_t _size, unsigned short difficulty) : _size(_size), 
             heap<double, transaction *>([](double a, double b) { return a > b; });
     minHeapNewbalanceOrig =
             heap<double, transaction *>([](double a, double b) { return a < b; });
+    maxHeapNewbalanceDest =
+            heap<double, transaction *>([](double a, double b) { return a > b; });
+    minHeapNewbalanceDest =
+            heap<double, transaction *>([](double a, double b) { return a < b; });
     maxHeapOldbalanceDest =
             heap<double, transaction *>([](double a, double b) { return a > b; });
     minHeapOldbalanceDest =
@@ -67,8 +71,8 @@ void blockchain::addFromFile(const std::string &path, bool skipFirstLine, size_t
         minHeapNewbalanceOrig.push(std::make_pair(transactions.back()->getNewbalanceOrig(), transactions.back()));
         maxHeapOldbalanceDest.push(std::make_pair(transactions.back()->getOldbalanceDest(), transactions.back()));
         minHeapOldbalanceDest.push(std::make_pair(transactions.back()->getOldbalanceDest(), transactions.back()));
-        //        maxHeapNewbalanceDest.push(std::make_pair(transactions.back()->getNewbalanceDest(), transactions.back()));
-        //        minHeapNewbalanceDest.push(std::make_pair(transactions.back()->getNewbalanceDest(), transactions.back()));
+        maxHeapNewbalanceDest.push(std::make_pair(transactions.back()->getNewbalanceDest(), transactions.back()));
+        minHeapNewbalanceDest.push(std::make_pair(transactions.back()->getNewbalanceDest(), transactions.back()));
 
         patricia.insert(lineV[6], transactions.back());
         hashMap.set(transactions.back()->getuniq(), transactions.back());
@@ -104,8 +108,10 @@ void blockchain::addBlock(const dynamic_array<transaction *> &newTransactions) {
 
 void blockchain::addBlock(const dynamic_array_iterator<transaction *> &begin, const dynamic_array_iterator<transaction *> &end) {
     indexNewData(begin, end);
+    auto start = transactions.end() - (end - begin);
+    auto finish = transactions.end();
     lastBlock->next = new block<transaction *>(lastBlock->getIndex() + 1,
-                                               begin, end, &lastBlock->hash);
+                                               start, finish, &lastBlock->hash);
     lastBlock = lastBlock->next;
     lastBlock->mineBlock(difficulty);
     _size++;

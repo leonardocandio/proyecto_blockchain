@@ -78,27 +78,27 @@
     <div class="container section">
       <table id="tabla" class="highlight" hidden="hidden">
         <thead>
-        <th>newbalanceDest</th>
-        <th>oldbalanceDest</th>
-        <th>nameOrig</th>
         <th>step</th>
         <th>type</th>
         <th>amount</th>
+        <th>nameOrig</th>
         <th>oldbalanceOrg</th>
+        <th>newbalanceOrig</th>
         <th>nameDest</th>
-        <th>newbalanceOrg</th>
+        <th>oldbalanceDest</th>
+        <th>newbalanceDest</th>
         </thead>
         <tbody v-for="transaction in search" :key="search">
         <tr v-for="tran in transaction">
-          <td>{{ tran.newbalanceDest }}</td>
-          <td>{{ tran.oldbalanceDest }}</td>
-          <td>{{ tran.nameOrig }}</td>
           <td>{{ tran.step }}</td>
           <td>{{ tran.type }}</td>
           <td>{{ tran.amount }}</td>
+          <td>{{ tran.nameOrig }}</td>
           <td>{{ tran.oldbalanceOrg }}</td>
-          <td>{{ tran.nameDest }}</td>
           <td>{{ tran.newbalanceOrig }}</td>
+          <td>{{ tran.nameDest }}</td>
+          <td>{{ tran.oldbalanceDest }}</td>
+          <td>{{ tran.newbalanceDest }}</td>
         </tr>
         </tbody>
       </table>

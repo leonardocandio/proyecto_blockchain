@@ -100,7 +100,7 @@ public:
         int i = 0;
         while (i < int(key.length())) {
             char c = key[i];
-            TrieNode *child = current->children[c - 'a'];
+            TrieNode *child = current->children[c];
             if (child == nullptr) {
                 return false;
             } else {
@@ -162,7 +162,7 @@ public:
                     }
                     child->prefix = childPrefix.substr(0, j);
                     child->endWord.clear();
-                    child->children[newChild->prefix[0] - 'a'] = newChild;
+                    child->children[newChild->prefix[0]] = newChild;
                     parent = current;
                     current = child;
                     charToDelete = newChild->prefix[0];

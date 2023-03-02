@@ -1,0 +1,55 @@
+@startuml
+!pragma layout smetana
+'https://plantuml.com/class-diagram
+
+class block {
+    -size_t index;
+    -std::time_t timestamp;
+    -std::string hash;
+    -size_t nonce;
+    -std::string *prevHash;
+    -block *next;
+}
+class blockchain{
+    - _size;
+    - difficulty;
+
+    -block<transaction *> *firstBlock;
+    -block<transaction *> *lastBlock;
+    -dynamic_array<transaction *> transactions;
+
+    +heap<double, transaction *> maxHeapAmount;
+    +heap<double, transaction *> minHeapAmount;
+    +heap<double, transaction *> maxHeapOldbalanceOrg;
+    +heap<double, transaction *> minHeapOldbalanceOrg;
+    +heap<double, transaction *> maxHeapNewbalanceOrig;
+    +heap<double, transaction *> minHeapNewbalanceOrig;
+    +heap<double, transaction *> maxHeapOldbalanceDest;
+    +heap<double, transaction *> minHeapOldbalanceDest;
+    +heap<double, transaction *> maxHeapNewbalanceDest;
+    +heap<double, transaction *> minHeapNewbalanceDest;
+
+    +BTree<double, transaction *> bTreeAmount;
+    +BTree<double, transaction *> bTreeOldbalanceOrg ;
+    +BTree<double, transaction *> bTreeNewbalanceOrig;
+    +BTree<double, transaction *> bTreeOldbalanceDest;
+    +BTree<double, transaction *> bTreeNewbalanceDest;
+
+    +TriePatricia<transaction *> patricia;
+    +ChainHash<string, transaction *> hashMap;
+
+}
+class transaction{
+    - string type;
+    - double amount;
+    - string nameOrig;
+    - double oldbalanceOrg;
+    - double newbalanceOrig;
+    - string nameDest;
+    - double oldbalanceDest;
+    - double newbalanceDest;
+}
+
+blockchain <-- block
+block<--transaction
+@enduml

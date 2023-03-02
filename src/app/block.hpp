@@ -26,7 +26,7 @@ public:
 
     block &operator=(const block &other);
 
-    void mineBlock(unsigned short difficulty);
+    void mineBlock(unsigned short difficulty, bool bypass = false);
 
     [[nodiscard]] const std::string &getHash() const;
 
@@ -105,20 +105,22 @@ template<typename T>
 block<T>::~block() = default;
 
 template<typename T>
-void block<T>::mineBlock(unsigned short difficulty) {
+void block<T>::mineBlock(unsigned short difficulty, bool bypass) {
     std::string target(difficulty, '0');
-    while (hash.substr(0, difficulty) != target) {
+    while (hash.substr(0, difficulty) != target || bypass) {
         nonce++;
         hash = calculateHash();
+        if (hash.substr(0, difficulty) == target) {
+            break;
+        }
     }
 }
 
 template<typename T>
 std::string block<T>::calculateHash() const {
-    std::stringstream ss;
-    ss << index << timestamp << serializeTransactions() << nonce << *prevHash;
+    std::string ss = jsonify();
     sha1::SHA1 sha1;
-    sha1.processBytes(ss.str().c_str(), ss.str().size());
+    sha1.processBytes(ss.c_str(), ss.size());
     uint32_t digest[5];
     sha1.getDigest(digest);
     char tmp[45];

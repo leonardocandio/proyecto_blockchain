@@ -3,6 +3,7 @@
 //
 
 #include "blockchain.h"
+#include "iostream"
 #include "sstream"
 #include <utility>
 
@@ -361,13 +362,25 @@ void blockchain::indexNewData(const dynamic_array_iterator<transaction *> &begin
 
 void blockchain::recalculo() {
     auto temp = firstBlock;
-    int limit = 3;
-    for (int i = 0; i < limit; ++i) {
+    for (int i = 0; i < 3; ++i) {
         temp = temp->next;
     }
-    (*temp->transactionsBegin)->amount += 100;
+    std::cout << temp->jsonify() << std::endl;
+    for (auto t = temp->transactionsBegin; t != temp->transactionsEnd; ++t) {
+        (*t)->amount += 99;
+        (*t)->oldbalanceOrg += 99;
+        (*t)->newbalanceOrig += 99;
+        (*t)->oldbalanceDest += 99;
+        (*t)->newbalanceDest += 99;
+    }
+    temp->timestamp = time(nullptr);
     while (temp != nullptr) {
-        temp->mineBlock(difficulty);
+        temp->mineBlock(difficulty, true);
         temp = temp->next;
     }
+    temp = firstBlock;
+    for (int i = 0; i < 3; ++i) {
+        temp = temp->next;
+    }
+    std::cout << temp->jsonify() << std::endl;
 }

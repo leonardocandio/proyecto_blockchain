@@ -33,7 +33,6 @@ public:
 
     double amount{};
 
-private:
     unsigned short step{};
     std::string type;
     std::string nameOrig;

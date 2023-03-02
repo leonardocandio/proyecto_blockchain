@@ -32,6 +32,7 @@ public:
 
     block<transaction *> *getLastBlock();
 
+    void recalculo();
 
     dynamic_array<transaction *> getTransactionsByParamType(const std::string &param, const std::string &type, size_t limit, size_t rangeLow, size_t rangeHigh);
 

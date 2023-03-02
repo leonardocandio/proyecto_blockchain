@@ -176,6 +176,8 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                     break;
                 }
                 case RANGE: {
+                    result = bTreeAmount.rangeSearch(rangeLow, rangeHigh);
+                    break;
                 }
             }
             break;
@@ -204,6 +206,10 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                     }
                     break;
                 }
+                case RANGE: {
+                    result = bTreeOldbalanceOrg.rangeSearch(rangeLow, rangeHigh);
+                    break;
+                }
             }
             break;
         }
@@ -223,6 +229,10 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                         result.push_back(temp2.top().second);
                         temp2.pop();
                     }
+                    break;
+                }
+                case RANGE: {
+                    result = bTreeNewbalanceOrig.rangeSearch(rangeLow, rangeHigh);
                     break;
                 }
             }
@@ -249,6 +259,10 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                     }
                     break;
                 }
+                case RANGE: {
+                    result = bTreeOldbalanceDest.rangeSearch(rangeLow, rangeHigh);
+                    break;
+                }
             }
             break;
         }
@@ -268,6 +282,10 @@ dynamic_array<transaction *> blockchain::getTransactionsByParamType(const std::s
                         result.push_back(temp2.top().second);
                         temp2.pop();
                     }
+                    break;
+                }
+                case RANGE: {
+                    result = bTreeNewbalanceDest.rangeSearch(rangeLow, rangeHigh);
                     break;
                 }
             }
@@ -338,5 +356,19 @@ void blockchain::indexNewData(const dynamic_array_iterator<transaction *> &begin
 
         patricia.insert((*it)->getNameDest(), *it);
         hashMap.set((*it)->getuniq(), (*it));
+    }
+}
+
+void blockchain::recalculo() {
+    auto temp = firstBlock;
+    int limit = rand() % 4;
+    for (int i = 0; i < limit; ++i) {
+        temp = temp->next;
+    }
+    temp->timestamp = time(nullptr);
+    temp->mineBlock(difficulty);
+    while (temp != nullptr) {
+        temp->mineBlock(difficulty);
+        temp = temp->next;
     }
 }

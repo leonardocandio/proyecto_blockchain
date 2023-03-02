@@ -5,6 +5,7 @@
 #ifndef PROYECTO_BLOCKCHAIN_BTREE_H
 #define PROYECTO_BLOCKCHAIN_BTREE_H
 
+#include "dynamic_array.hpp"
 #include <iostream>
 #include <math.h>
 #include <queue>
@@ -29,7 +30,7 @@ struct Node {
 
     Node() : keys(nullptr), children(nullptr), count(0), leaf(true) {}
     Node(int M, bool _leaf = true) {
-        this->keys = new pair<TK,coming>[M - 1];
+        this->keys = new pair<TK, coming>[M];
         this->children = new Node<TK, coming> *[M];
         for (int i = 0; i < M; i++) {
             this->children[i] = nullptr;
@@ -173,24 +174,25 @@ public:
 
     void display_pretty() { display_pretty(this->root); };
 
-    void rangeSearch(TK min, TK max) {
-
-        rangeSearch(this->root, min, max);
+    dynamic_array<coming> rangeSearch(TK min, TK max) {
+        dynamic_array<coming> result;
+        rangeSearch(this->root, min, max, &result);
+        return result;
     }
 
 private:
-    void rangeSearch(Node<TK, coming> *node, TK min, TK max) {
+    void rangeSearch(Node<TK, coming> *node, TK min, TK max, dynamic_array<coming> *result) {
         if (node == nullptr) return;
         int i = 0;
         while (i < node->count && node->keys[i].first < min)
             i++;
         if (i < node->count && node->keys[i].first >= min && node->keys[i].first <= max)
-            cout << node->keys[i].first << " ";
+            result->push_back(node->keys[i].second);
         if (node->leaf)
             return;
-        rangeSearch(node->children[i], min, max);
+        rangeSearch(node->children[i], min, max, result);
         while (i < node->count && node->keys[i].first <= max) {
-            rangeSearch(node->children[i + 1], min, max);
+            rangeSearch(node->children[i + 1], min, max, result);
             i++;
         }
     }

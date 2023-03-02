@@ -47,6 +47,12 @@ int main() {
                 auto r = crow::json::wvalue({{"newBlock", crow::json::load(bc.getLastBlock()->jsonify())}});
                 return crow::response(r);
             });
+    CROW_ROUTE(app, "/recalculo").methods("GET"_method)([&bc]() {
+        bc.recalculo();
+        crow::json::wvalue x({{"blocks", crow::json::load(bc.jsonify())}});
+        return crow::response(x);
+    });
+
     CROW_ROUTE(app, "/transactions")
             .methods("POST"_method)([&bc](const crow::request &req) {
                 crow::json::rvalue body = crow::json::load(req.body);

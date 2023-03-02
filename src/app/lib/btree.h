@@ -29,7 +29,7 @@ struct Node {
 
     Node() : keys(nullptr), children(nullptr), count(0), leaf(true) {}
     Node(int M, bool _leaf = true) {
-        this->keys = new TK[M - 1];
+        this->keys = new pair<TK,coming>[M - 1];
         this->children = new Node<TK, coming> *[M];
         for (int i = 0; i < M; i++) {
             this->children[i] = nullptr;
@@ -436,7 +436,7 @@ void BTree<TK, coming>::insert(TK key, coming pointer) {
         SplitResult<TK, coming> *split_result = insert(this->root, key, pointer);
         if (split_result != nullptr) {
             auto *parent = new Node<TK, coming>(M, false);
-            parent->keys[0] = split_result->key;
+            parent->keys[0] = *split_result->key.keys;
             parent->children[0] = root;
             parent->children[1] = split_result->right_tree;
             parent->count = 1;
@@ -472,12 +472,12 @@ SplitResult<TK, coming> *BTree<TK, coming>::insert(Node<TK, coming> *&node, TK k
         if (split_result != nullptr) {
             // si hay espacio, reubicar el split_result
             if (node->count < M - 1)
-                relocate(node, split_result->key, pointer, split_result->right_tree);
+                relocate(node, split_result->key.keys->first, pointer, split_result->right_tree);
             // caso, dividir y retornar el nuevo nodo al antecesor
             else if (M % 2 == 0)
-                return split_par(node, split_result->key, pointer, split_result->right_tree);
+                return split_par(node, split_result->key.keys->first, pointer, split_result->right_tree);
             else
-                return split_impar(node, split_result->key, pointer, split_result->right_tree);
+                return split_impar(node, split_result->key.keys->first, pointer, split_result->right_tree);
         }
     }
     return nullptr;
@@ -519,7 +519,7 @@ template<typename TK, typename coming>
 SplitResult<TK, coming> *BTree<TK, coming>::split_par(Node<TK, coming> *&node, TK key, coming pointer, Node<TK, coming> *key_right_tree) {
     // calcular el elemento central
     int m = (M - 1) / 2;
-    TK middle = node->keys[m];
+    TK middle = node->keys[m].first;
     // crear nodo derecho desde m+1
     Node<TK, coming> *right_node = generate_right_node(node, m + 1);
     // actualizar la cantidad de elementos del nodo
@@ -539,16 +539,16 @@ SplitResult<TK, coming> *BTree<TK, coming>::split_impar(Node<TK, coming> *&node,
     TK middle;
     // calcular el elemento central correctamente
     int m = (M - 1) / 2;
-    if (key > node->keys[m]) {
+    if (key > node->keys[m].first) {
         right_node = generate_right_node(node, m + 1);
-        middle = node->keys[m];
+        middle = node->keys[m].first;
         node->count = m;
         relocate(right_node, key, pointer, key_right_tree);
     } else {
         m = m - 1;
         right_node = generate_right_node(node, m + 1);
-        if (key < node->keys[m]) {
-            middle = node->keys[m];
+        if (key < node->keys[m].first) {
+            middle = node->keys[m].first;
             node->count = m;
             relocate(node, key, pointer, key_right_tree);
         } else {// en caso que la llave a insertar ocupe la mitad

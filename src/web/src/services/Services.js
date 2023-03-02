@@ -13,6 +13,9 @@ export default {
     getBlocks() {
       return apiClient.get("/blocks");
     },
+    getRecalculo() {
+      return apiClient.get("/recalculo");
+    },
     postBlock(block) {
       return apiClient.post("/blocks", block);
     },

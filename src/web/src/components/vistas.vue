@@ -28,6 +28,10 @@
         </div>
       </div>
     </div>
+
+    <button class="btn waves-effect waves-light" type="submit" name="enviar" v-on:click="Recalculo()">Recalculo
+      <i class="material-icons right">open_in_browser</i>
+    </button>
   </div>
 </template>
 
@@ -66,6 +70,7 @@ export default {
 
   created() {
     this.getBlocks();
+    this.getRecalculo();
   },
 
   mounted() {
@@ -94,6 +99,12 @@ export default {
         window.location.reload();
       }
       localStorage.setItem("loading", 0);
+    },
+
+    Recalculo(){
+      Services.getRecalculo().then((response) => {
+        this.blocks = response.data.blocks;
+      });
     }
   }
 };

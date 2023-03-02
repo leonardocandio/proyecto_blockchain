@@ -70,7 +70,6 @@ export default {
 
   created() {
     this.getBlocks();
-    this.getRecalculo();
   },
 
   mounted() {

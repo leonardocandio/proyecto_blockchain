@@ -361,12 +361,11 @@ void blockchain::indexNewData(const dynamic_array_iterator<transaction *> &begin
 
 void blockchain::recalculo() {
     auto temp = firstBlock;
-    int limit = rand() % 4;
+    int limit = 3;
     for (int i = 0; i < limit; ++i) {
         temp = temp->next;
     }
-    temp->timestamp = time(nullptr);
-    temp->mineBlock(difficulty);
+    (*temp->transactionsBegin)->amount += 100;
     while (temp != nullptr) {
         temp->mineBlock(difficulty);
         temp = temp->next;

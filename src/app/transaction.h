@@ -31,19 +31,18 @@ public:
 
     std::string getuniq() const;
 
+    double amount{};
+
 private:
     unsigned short step{};
     std::string type;
-    double amount{};
     std::string nameOrig;
     double oldbalanceOrg{};
     double newbalanceOrig{};
     std::string nameDest;
     double oldbalanceDest{};
     double newbalanceDest{};
-
-
 };
 
 
-#endif //PROYECTO_BLOCKCHAIN_TRANSACTION_H
+#endif//PROYECTO_BLOCKCHAIN_TRANSACTION_H

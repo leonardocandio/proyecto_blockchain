@@ -48,7 +48,9 @@ int main() {
                 return crow::response(r);
             });
     CROW_ROUTE(app, "/recalculo").methods("GET"_method)([&bc]() {
+        std::cout << "Recalculando" << std::endl;
         bc.recalculo();
+        std::cout << "Recalculado..." << std::endl;
         crow::json::wvalue x({{"blocks", crow::json::load(bc.jsonify())}});
         return crow::response(x);
     });

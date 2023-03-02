@@ -51,15 +51,17 @@ public:
     virtual ~block();
 
 
+    dynamic_array<T> transactions;
+
+    typename dynamic_array<T>::iterator transactionsBegin;
+    typename dynamic_array<T>::iterator transactionsEnd;
+
 private:
     [[nodiscard]] std::string serializeTransactions() const;
 
     [[nodiscard]] std::string jsonifyTransactions() const;
 
     size_t index = 0;
-    typename dynamic_array<T>::iterator transactionsBegin;
-    typename dynamic_array<T>::iterator transactionsEnd;
-    dynamic_array<T> transactions;
     std::time_t timestamp = 0;
     std::string hash;
     size_t nonce = -1;
